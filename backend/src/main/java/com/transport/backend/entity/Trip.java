@@ -1,0 +1,166 @@
+package com.transport.backend.entity;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "trips")
+public class Trip {
+
+    @Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Integer id;
+
+    @Column(name = "trip_code", nullable = false, unique = true, length = 255)
+    private String tripCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id")
+    private Route route;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_id", nullable = false)
+    private Driver driver;
+
+    @Column(name = "departure_time")
+    private LocalDateTime departureTime;
+
+    @Column(name = "arrival_time")
+    private LocalDateTime arrivalTime;
+
+    @Column(name = "total_cost", precision = 15, scale = 2)
+    private BigDecimal totalCost;
+
+    @Column(name = "total_revenue", precision = 15, scale = 2)
+    private BigDecimal totalRevenue;
+
+    @Column(length = 255)
+    private String status;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    public Trip() {
+    }
+
+    public Trip( String tripCode, Route route, Vehicle vehicle, Driver driver, LocalDateTime departureTime,
+            LocalDateTime arrivalTime, BigDecimal totalCost, BigDecimal totalRevenue, String status,
+            LocalDateTime createdAt) {
+        
+        this.tripCode = tripCode;
+        this.route = route;
+        this.vehicle = vehicle;
+        this.driver = driver;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.totalCost = totalCost;
+        this.totalRevenue = totalRevenue;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
+    public String getTripCode() {
+        return tripCode;
+    }
+
+    public void setTripCode(String tripCode) {
+        this.tripCode = tripCode;
+    }
+    
+    public Route getRoute() {
+        return route;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+    
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+    
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+    
+    public LocalDateTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalDateTime departureTime) {
+        this.departureTime = departureTime;
+    }
+    
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+    
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+    
+    public BigDecimal getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public void setTotalRevenue(BigDecimal totalRevenue) {
+        this.totalRevenue = totalRevenue;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+}
