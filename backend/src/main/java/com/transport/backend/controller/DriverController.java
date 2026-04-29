@@ -1,5 +1,7 @@
 package com.transport.backend.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,11 @@ public class DriverController {
 
     @Autowired
     private DriverService driverService;
+
+    @GetMapping()
+    public List<DriverDTO> getAll() {
+        return driverService.getAll();
+    }
 
     @PostMapping
     public DriverDTO create(@RequestBody CreateDriverRequest req) {

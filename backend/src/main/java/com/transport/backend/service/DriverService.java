@@ -36,6 +36,17 @@ public class DriverService {
         return DriverMapper.toDTO(d);
     }
 
+    public java.util.List<DriverDTO> getAll() {
+        java.util.List<Driver> drivers = driverRepository.findAll();
+        java.util.List<DriverDTO> dtos = new java.util.ArrayList<>();
+
+        for (Driver d : drivers) {
+            dtos.add(DriverMapper.toDTO(d));
+        }
+
+        return dtos;
+    }
+
     public DriverDTO getById(Integer id) {
         Driver d = driverRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Driver not found"));
