@@ -1,6 +1,7 @@
 package com.transport.backend.service.campaign;
 
 import com.transport.backend.dto.campaign.JobApplicationDTO;
+import com.transport.backend.dto.campaign.JobApplicationResponse;
 import com.transport.backend.entity.JobApplication;
 import com.transport.backend.entity.RecruitmentCampaign;
 import com.transport.backend.repository.CampaignRepository.*;
@@ -21,14 +22,35 @@ public class JobApplicationService {
         this.campaignRepository = campaignRepository;
     }
 
-    // CREATE
-    public JobApplication create(JobApplicationDTO dto) {
+    // ================== MAPPER ==================
+    private JobApplicationResponse toResponse(JobApplication app) {
+        JobApplicationResponse dto = new JobApplicationResponse();
+
+        dto.setId(app.getId());
+        dto.setFullName(app.getFullName());
+        dto.setPhone(app.getPhone());
+        dto.setEmail(app.getEmail());
+        dto.setAddress(app.getAddress());
+        dto.setExperienceYears(app.getExperienceYears());
+        dto.setStatus(app.getStatus());
+        dto.setCreatedAt(app.getCreatedAt());
+
+        if (app.getCampaign() != null) {
+            dto.setCampaignId(app.getCampaign().getId());
+            dto.setCampaignName(app.getCampaign().getTitle());
+        }
+
+        return dto;
+    }
+
+    // ================== CREATE ==================
+    public JobApplicationResponse create(JobApplicationDTO dto) {
 
         RecruitmentCampaign campaign = campaignRepository.findById(dto.getCampaignId())
                 .orElseThrow(() -> new RuntimeException("Campaign not found"));
 
         JobApplication app = new JobApplication();
-        app.setCampaign(campaign); // 🔥 QUAN TRỌNG
+        app.setCampaign(campaign);
         app.setFullName(dto.getFullName());
         app.setPhone(dto.getPhone());
         app.setEmail(dto.getEmail());
@@ -36,29 +58,36 @@ public class JobApplicationService {
         app.setExperienceYears(dto.getExperienceYears());
         app.setStatus(dto.getStatus());
 
-        return repository.save(app);
+        return toResponse(repository.save(app));
     }
 
-    // GET ALL
-    public List<JobApplication> getAll() {
-        return repository.findAll();
+    // ================== GET ALL ==================
+    public List<JobApplicationResponse> getAll() {
+        return repository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    // GET BY CAMPAIGN
-    public List<JobApplication> getByCampaign(Integer campaignId) {
-        return repository.findByCampaign_Id(campaignId);
+    // ================== GET BY ID ==================
+    public JobApplicationResponse getById(Integer id) {
+        return toResponse(repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found")));
     }
 
-    // GET DETAIL
-    public JobApplication getById(Integer id) {
-        return repository.findById(id)
+    // ================== GET BY CAMPAIGN ==================
+    public List<JobApplicationResponse> getByCampaign(Integer campaignId) {
+        return repository.findByCampaign_Id(campaignId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    // ================== UPDATE ==================
+    public JobApplicationResponse update(Integer id, JobApplicationDTO dto) {
+
+        JobApplication app = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Application not found"));
-    }
-
-    // UPDATE
-    public JobApplication update(Integer id, JobApplicationDTO dto) {
-
-        JobApplication app = getById(id);
 
         if (dto.getCampaignId() != null) {
             RecruitmentCampaign campaign = campaignRepository.findById(dto.getCampaignId())
@@ -73,10 +102,10 @@ public class JobApplicationService {
         app.setExperienceYears(dto.getExperienceYears());
         app.setStatus(dto.getStatus());
 
-        return repository.save(app);
+        return toResponse(repository.save(app));
     }
 
-    // DELETE
+    // ================== DELETE ==================
     public void delete(Integer id) {
         repository.deleteById(id);
     }

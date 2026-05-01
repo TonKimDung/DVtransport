@@ -1,7 +1,7 @@
 package com.transport.backend.controller.campaign;
 
 import com.transport.backend.dto.campaign.JobApplicationDTO;
-import com.transport.backend.entity.JobApplication;
+import com.transport.backend.dto.campaign.JobApplicationResponse;
 import com.transport.backend.service.campaign.JobApplicationService;
 
 import org.springframework.web.bind.annotation.*;
@@ -19,27 +19,27 @@ public class JobApplicationController {
     }
 
     @PostMapping
-    public JobApplication create(@RequestBody JobApplicationDTO dto) {
+    public JobApplicationResponse create(@RequestBody JobApplicationDTO dto) {
         return service.create(dto);
     }
 
     @GetMapping
-    public List<JobApplication> getAll() {
+    public List<JobApplicationResponse> getAll() {
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    public JobApplication getById(@PathVariable Integer id) {
+    public JobApplicationResponse getById(@PathVariable Integer id) {
         return service.getById(id);
     }
 
     @GetMapping("/campaign/{campaignId}")
-    public List<JobApplication> getByCampaign(@PathVariable Integer campaignId) {
+    public List<JobApplicationResponse> getByCampaign(@PathVariable Integer campaignId) {
         return service.getByCampaign(campaignId);
     }
 
     @PutMapping("/{id}")
-    public JobApplication update(@PathVariable Integer id,
+    public JobApplicationResponse update(@PathVariable Integer id,
             @RequestBody JobApplicationDTO dto) {
         return service.update(id, dto);
     }
