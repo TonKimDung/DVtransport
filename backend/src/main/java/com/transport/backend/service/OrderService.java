@@ -12,11 +12,11 @@ import com.transport.backend.entity.Customer;
 import com.transport.backend.entity.Order;
 import com.transport.backend.entity.Route;
 import com.transport.backend.entity.Vehicle;
-import com.transport.backend.repository.ContractRepository;
-import com.transport.backend.repository.CustomerRepository;
 import com.transport.backend.repository.OrderRepository;
 import com.transport.backend.repository.RouteRepository;
 import com.transport.backend.repository.VehicleRepository;
+import com.transport.backend.repository.ContractRepository;
+import com.transport.backend.repository.CustomerRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -124,8 +124,7 @@ public class OrderService {
 
         return vehicleRepository.findByCapacityGreaterThanEqualAndStatus(
                 order.getWeight(),
-                "Đang hoạt động"
-        );
+                "Đang hoạt động");
     }
 
     public List<Order> getDailyPlan(LocalDate date) {
