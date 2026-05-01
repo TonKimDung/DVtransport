@@ -1,35 +1,39 @@
-// package com.transport.backend.controller.driver_assignment;
+package com.transport.backend.controller.driver_assignment;
 
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
-// import com.transport.backend.dto.driver_assignment.AssignDriverRequest;
-// import com.transport.backend.dto.driver_assignment.DriverWorkResponse;
-// import com.transport.backend.entity.VehicleDriverAssignment;
-// import
-// com.transport.backend.service.driver_assignment.DriverAssignmentService;
+import org.springframework.web.bind.annotation.*;
 
-// @RestController
-// @RequestMapping("/api/driver")
-// public class DriverAssignmentController {
+import com.transport.backend.dto.driver_assignment.AssignDriverRequest;
+import com.transport.backend.dto.driver_assignment.AssignmentResponse;
+import com.transport.backend.dto.driver_assignment.DriverWorkResponse;
+import com.transport.backend.service.driver_assignment.DriverAssignmentService;
 
-// private final DriverAssignmentService service;
+@RestController
+@RequestMapping("/api/driver-assignments")
+public class DriverAssignmentController {
 
-// public DriverAssignmentController(DriverAssignmentService service) {
-// this.service = service;
-// }
+    private final DriverAssignmentService service;
 
-// @PostMapping("/assign")
-// public VehicleDriverAssignment assign(@RequestBody AssignDriverRequest req) {
-// return service.assign(req.vehicleId, req.driverId);
-// }
+    public DriverAssignmentController(DriverAssignmentService service) {
+        this.service = service;
+    }
 
-// @GetMapping("/{driverId}/work")
-// public DriverWorkResponse work(@PathVariable Integer driverId) {
-// return service.getWork(driverId);
-// }
-// }
+    // 🚗 1. GÁN TÀI XẾ
+    @PostMapping
+    public AssignmentResponse assign(@RequestBody AssignDriverRequest req) {
+        return service.assign(req);
+    }
+
+    // 📄 LIST
+    @GetMapping
+    public List<AssignmentResponse> getAll() {
+        return service.getAll();
+    }
+
+    // ⏱️ 2 + 3: GIỜ LÀM + CẢNH BÁO
+    @GetMapping("/driver/{driverId}/work")
+    public DriverWorkResponse getWork(@PathVariable Integer driverId) {
+        return service.getWorkToday(driverId);
+    }
+}
