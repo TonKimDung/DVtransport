@@ -1,12 +1,12 @@
 package com.transport.backend.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.transport.backend.dto.order.OrderRequest;
+import com.transport.backend.dto.order.OrderResponse;
 import com.transport.backend.entity.Contract;
 import com.transport.backend.entity.Customer;
 import com.transport.backend.entity.Order;
@@ -17,6 +17,10 @@ import com.transport.backend.repository.RouteRepository;
 import com.transport.backend.repository.VehicleRepository;
 import com.transport.backend.repository.ContractRepository;
 import com.transport.backend.repository.CustomerRepository;
+import com.transport.backend.repository.ContractRepository;
+import com.transport.backend.repository.CustomerRepository;
+import com.transport.backend.repository.OrderRepository;
+import com.transport.backend.repository.RouteRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,23 +29,51 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final VehicleRepository vehicleRepository;
     private final CustomerRepository customerRepository;
     private final ContractRepository contractRepository;
     private final RouteRepository routeRepository;
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    private OrderResponse toResponse(Order order) {
+        return OrderResponse.builder()
+                .id(order.getId())
+                .orderCode(order.getOrderCode())
+
+                .customerId(order.getCustomer() != null ? order.getCustomer().getId() : null)
+                .customerName(order.getCustomer() != null ? order.getCustomer().getName() : null)
+
+                .contractId(order.getContract() != null ? order.getContract().getId() : null)
+
+                .routeId(order.getRoute() != null ? order.getRoute().getId() : null)
+                .routeName(order.getRoute() != null ? order.getRoute().getRouteName() : null)
+
+                .cargoType(order.getCargoType())
+                .weight(order.getWeight())
+                .quantity(order.getQuantity())
+                .pickupAddress(order.getPickupAddress())
+                .deliveryAddress(order.getDeliveryAddress())
+                .totalAmount(order.getTotalAmount())
+                .status(order.getStatus())
+                .createdAt(order.getCreatedAt())
+                .build();
     }
 
-    public Order getOrderById(Integer id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn vận chuyển"));
+    public List<OrderResponse> getAllOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public Order createOrder(OrderRequest request) {
+    public OrderResponse getOrderById(Integer id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn"));
+        return toResponse(order);
+    }
+
+    public OrderResponse createOrder(OrderRequest request) {
+
         if (orderRepository.existsByOrderCode(request.getOrderCode())) {
-            throw new RuntimeException("Mã đơn vận chuyển đã tồn tại");
+            throw new RuntimeException("Mã đơn đã tồn tại");
         }
 
         Customer customer = customerRepository.findById(request.getCustomerId())
@@ -56,7 +88,7 @@ public class OrderService {
         Route route = null;
         if (request.getRouteId() != null) {
             route = routeRepository.findById(request.getRouteId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến đường"));
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến"));
         }
 
         Order order = Order.builder()
@@ -71,13 +103,16 @@ public class OrderService {
                 .deliveryAddress(request.getDeliveryAddress())
                 .totalAmount(request.getTotalAmount())
                 .status(request.getStatus() != null ? request.getStatus() : "Chờ nhận")
+                .createdAt(LocalDateTime.now())
                 .build();
 
-        return orderRepository.save(order);
+        return toResponse(orderRepository.save(order));
     }
 
-    public Order updateOrder(Integer id, OrderRequest request) {
-        Order order = getOrderById(id);
+    public OrderResponse updateOrder(Integer id, OrderRequest request) {
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn"));
 
         Customer customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
@@ -91,7 +126,7 @@ public class OrderService {
         Route route = null;
         if (request.getRouteId() != null) {
             route = routeRepository.findById(request.getRouteId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến đường"));
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến"));
         }
 
         order.setOrderCode(request.getOrderCode());
@@ -139,10 +174,12 @@ public class OrderService {
         LocalDateTime end = startDate.plusDays(7).atStartOfDay();
 
         return orderRepository.findByCreatedAtBetween(start, end);
+        return toResponse(orderRepository.save(order));
     }
 
     public void deleteOrder(Integer id) {
-        Order order = getOrderById(id);
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn"));
         orderRepository.delete(order);
     }
 }
