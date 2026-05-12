@@ -11,6 +11,12 @@ import com.transport.backend.entity.Contract;
 import com.transport.backend.entity.Customer;
 import com.transport.backend.entity.Order;
 import com.transport.backend.entity.Route;
+import com.transport.backend.entity.Vehicle;
+import com.transport.backend.repository.OrderRepository;
+import com.transport.backend.repository.RouteRepository;
+import com.transport.backend.repository.VehicleRepository;
+import com.transport.backend.repository.ContractRepository;
+import com.transport.backend.repository.CustomerRepository;
 import com.transport.backend.repository.ContractRepository;
 import com.transport.backend.repository.CustomerRepository;
 import com.transport.backend.repository.OrderRepository;
@@ -135,6 +141,39 @@ public class OrderService {
         order.setTotalAmount(request.getTotalAmount());
         order.setStatus(request.getStatus());
 
+        return orderRepository.save(order);
+    }
+
+    public Order updateOrderStatus(Integer id, String status) {
+        Order order = getOrderById(id);
+        order.setStatus(status);
+        return orderRepository.save(order);
+    }
+
+    public List<Order> getOrdersByStatus(String status) {
+        return orderRepository.findByStatus(status);
+    }
+
+    public List<Vehicle> suggestVehicles(Integer orderId) {
+        Order order = getOrderById(orderId);
+
+        return vehicleRepository.findByCapacityGreaterThanEqualAndStatus(
+                order.getWeight(),
+                "Đang hoạt động");
+    }
+
+    public List<Order> getDailyPlan(LocalDate date) {
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
+
+        return orderRepository.findByCreatedAtBetween(start, end);
+    }
+
+    public List<Order> getWeeklyPlan(LocalDate startDate) {
+        LocalDateTime start = startDate.atStartOfDay();
+        LocalDateTime end = startDate.plusDays(7).atStartOfDay();
+
+        return orderRepository.findByCreatedAtBetween(start, end);
         return toResponse(orderRepository.save(order));
     }
 

@@ -21,8 +21,8 @@ import jakarta.persistence.Table;
 public class DriverWorkLog {
 
     @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = false)
@@ -48,9 +48,9 @@ private Integer id;
     public DriverWorkLog() {
     }
 
-    public DriverWorkLog( Driver driver, Trip trip, LocalDate workDate, BigDecimal drivingHours,
+    public DriverWorkLog(Driver driver, Trip trip, LocalDate workDate, BigDecimal drivingHours,
             Integer tripCount, LocalDateTime createdAt) {
-        
+
         this.driver = driver;
         this.trip = trip;
         this.workDate = workDate;
@@ -66,7 +66,7 @@ private Integer id;
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public Driver getDriver() {
         return driver;
     }
@@ -74,7 +74,7 @@ private Integer id;
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
-    
+
     public Trip getTrip() {
         return trip;
     }
@@ -82,7 +82,7 @@ private Integer id;
     public void setTrip(Trip trip) {
         this.trip = trip;
     }
-    
+
     public LocalDate getWorkDate() {
         return workDate;
     }
@@ -90,7 +90,7 @@ private Integer id;
     public void setWorkDate(LocalDate workDate) {
         this.workDate = workDate;
     }
-    
+
     public BigDecimal getDrivingHours() {
         return drivingHours;
     }
@@ -98,7 +98,7 @@ private Integer id;
     public void setDrivingHours(BigDecimal drivingHours) {
         this.drivingHours = drivingHours;
     }
-    
+
     public Integer getTripCount() {
         return tripCount;
     }
@@ -106,7 +106,7 @@ private Integer id;
     public void setTripCount(Integer tripCount) {
         this.tripCount = tripCount;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

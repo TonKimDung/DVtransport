@@ -18,8 +18,8 @@ import jakarta.persistence.Table;
 public class GpsTracking {
 
     @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id", nullable = false)
@@ -41,9 +41,9 @@ private Integer id;
     public GpsTracking() {
     }
 
-    public GpsTracking( Vehicle vehicle, Trip trip, BigDecimal latitude, BigDecimal longitude,
+    public GpsTracking(Vehicle vehicle, Trip trip, BigDecimal latitude, BigDecimal longitude,
             LocalDateTime recordedAt) {
-        
+
         this.vehicle = vehicle;
         this.trip = trip;
         this.latitude = latitude;
@@ -58,7 +58,7 @@ private Integer id;
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public Vehicle getVehicle() {
         return vehicle;
     }
@@ -66,7 +66,7 @@ private Integer id;
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
     }
-    
+
     public Trip getTrip() {
         return trip;
     }
@@ -74,7 +74,7 @@ private Integer id;
     public void setTrip(Trip trip) {
         this.trip = trip;
     }
-    
+
     public BigDecimal getLatitude() {
         return latitude;
     }
@@ -82,7 +82,7 @@ private Integer id;
     public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
-    
+
     public BigDecimal getLongitude() {
         return longitude;
     }
@@ -90,7 +90,7 @@ private Integer id;
     public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
-    
+
     public LocalDateTime getRecordedAt() {
         return recordedAt;
     }

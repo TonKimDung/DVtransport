@@ -19,8 +19,8 @@ import jakarta.persistence.Table;
 public class JobApplication {
 
     @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campaign_id", nullable = false)
@@ -51,9 +51,9 @@ private Integer id;
     public JobApplication() {
     }
 
-    public JobApplication( RecruitmentCampaign campaign, String fullName, String phone, String email,
+    public JobApplication(RecruitmentCampaign campaign, String fullName, String phone, String email,
             String address, Integer experienceYears, String status, LocalDateTime createdAt) {
-        
+
         this.campaign = campaign;
         this.fullName = fullName;
         this.phone = phone;
@@ -95,7 +95,7 @@ private Integer id;
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -103,7 +103,7 @@ private Integer id;
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public String getAddress() {
         return address;
     }
@@ -111,7 +111,7 @@ private Integer id;
     public void setAddress(String address) {
         this.address = address;
     }
-    
+
     public Integer getExperienceYears() {
         return experienceYears;
     }
@@ -127,7 +127,7 @@ private Integer id;
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

@@ -1,0 +1,28 @@
+services:
+
+  db:
+    image: postgres:15
+    container_name: transport_db
+    environment:
+      POSTGRES_DB: DVtransport
+      POSTGRES_USER: neondb_owner
+      POSTGRES_PASSWORD: npg_s67gtnjcUXZy
+    ports:
+      - "5432:5432"
+
+  sem-service:
+    build: ./SEM
+    container_name: sem_service
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
+  backend:
+    build: ./backend
+    container_name: spring_backend
+    depends_on:
+      - db
+      - sem-service
+    ports:
+      - "8080:8080"
