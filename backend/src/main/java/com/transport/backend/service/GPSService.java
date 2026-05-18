@@ -4,7 +4,7 @@ import com.transport.backend.dto.GpsDTO;
 import com.transport.backend.entity.GpsTracking;
 import com.transport.backend.entity.Trip;
 import com.transport.backend.repository.GPSTrackingRepository;
-import com.transport.backend.repository.trip.TripRepository;
+import com.transport.backend.repository.TripRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 

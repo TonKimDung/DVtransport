@@ -9,7 +9,7 @@ import com.transport.backend.dto.trip.*;
 import com.transport.backend.entity.*;
 import com.transport.backend.repository.*;
 import com.transport.backend.repository.driver_assignment.VehicleDriverAssignmentRepository;
-import com.transport.backend.repository.trip.TripRepository;
+import com.transport.backend.repository.TripRepository;
 
 @Service
 public class TripService {

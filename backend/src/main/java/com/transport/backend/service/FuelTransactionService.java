@@ -16,7 +16,7 @@ import com.transport.backend.entity.Trip;
 import com.transport.backend.entity.Vehicle;
 import com.transport.backend.repository.DriverRepository;
 import com.transport.backend.repository.FuelTransactionRepository;
-import com.transport.backend.repository.PartnerRepository;
+import com.transport.backend.repository.contract.PartnerRepository;
 import com.transport.backend.repository.TripRepository;
 import com.transport.backend.repository.VehicleRepository;
 
