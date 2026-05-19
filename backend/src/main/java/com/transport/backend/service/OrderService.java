@@ -144,9 +144,12 @@ public class OrderService {
         return toResponse(orderRepository.save(order));
     }
 
-    public List<Order> getOrdersByStatus(String status) {
-        return orderRepository.findByStatus(status);
-    }
+    public List<OrderResponse> getOrdersByStatus(String status) {
+    return orderRepository.findByStatus(status)
+            .stream()
+            .map(this::toResponse)
+            .toList();
+}
 
     public List<Vehicle> suggestVehicles(Integer orderId) {
         Order order = getOrderEntityById(orderId);
