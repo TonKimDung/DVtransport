@@ -28,8 +28,8 @@ import lombok.Setter;
 public class Trip {
 
     @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name = "trip_code", nullable = false, unique = true, length = 255)
     private String tripCode;
@@ -68,10 +68,10 @@ private Integer id;
     public Trip() {
     }
 
-    public Trip( String tripCode, Route route, Vehicle vehicle, Driver driver, LocalDateTime departureTime,
+    public Trip(String tripCode, Route route, Vehicle vehicle, Driver driver, LocalDateTime departureTime,
             LocalDateTime arrivalTime, BigDecimal totalCost, BigDecimal totalRevenue, String status,
             LocalDateTime createdAt) {
-        
+
         this.tripCode = tripCode;
         this.route = route;
         this.vehicle = vehicle;
@@ -91,7 +91,7 @@ private Integer id;
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public String getTripCode() {
         return tripCode;
     }
@@ -99,7 +99,7 @@ private Integer id;
     public void setTripCode(String tripCode) {
         this.tripCode = tripCode;
     }
-    
+
     public Route getRoute() {
         return route;
     }
@@ -107,7 +107,7 @@ private Integer id;
     public void setRoute(Route route) {
         this.route = route;
     }
-    
+
     public Vehicle getVehicle() {
         return vehicle;
     }
@@ -115,7 +115,7 @@ private Integer id;
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
     }
-    
+
     public Driver getDriver() {
         return driver;
     }
@@ -123,7 +123,7 @@ private Integer id;
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
-    
+
     public LocalDateTime getDepartureTime() {
         return departureTime;
     }
@@ -131,7 +131,7 @@ private Integer id;
     public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
-    
+
     public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
@@ -139,7 +139,7 @@ private Integer id;
     public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
-    
+
     public BigDecimal getTotalCost() {
         return totalCost;
     }
@@ -147,7 +147,7 @@ private Integer id;
     public void setTotalCost(BigDecimal totalCost) {
         this.totalCost = totalCost;
     }
-    
+
     public BigDecimal getTotalRevenue() {
         return totalRevenue;
     }
@@ -155,7 +155,7 @@ private Integer id;
     public void setTotalRevenue(BigDecimal totalRevenue) {
         this.totalRevenue = totalRevenue;
     }
-    
+
     public String getStatus() {
         return status;
     }
@@ -163,7 +163,7 @@ private Integer id;
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

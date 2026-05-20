@@ -26,8 +26,8 @@ import lombok.Setter;
 public class Vehicle {
 
     @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name = "plate_number", nullable = false, unique = true, length = 255)
     private String plateNumber;
@@ -54,12 +54,18 @@ private Integer id;
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "current_location")
+    private String currentLocation;
+
+    @Column(name = "is_available")
+    private Boolean isAvailable = true;
+
     public Vehicle() {
     }
 
-    public Vehicle( String plateNumber, String vehicleType, BigDecimal capacity, String status,
+    public Vehicle(String plateNumber, String vehicleType, BigDecimal capacity, String status,
             Integer manufactureYear, LocalDate inspectionExpiry, LocalDate insuranceExpiry, LocalDateTime createdAt) {
-        
+
         this.plateNumber = plateNumber;
         this.vehicleType = vehicleType;
         this.capacity = capacity;
@@ -77,7 +83,7 @@ private Integer id;
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public String getPlateNumber() {
         return plateNumber;
     }
@@ -85,7 +91,7 @@ private Integer id;
     public void setPlateNumber(String plateNumber) {
         this.plateNumber = plateNumber;
     }
-    
+
     public String getVehicleType() {
         return vehicleType;
     }
@@ -93,7 +99,7 @@ private Integer id;
     public void setVehicleType(String vehicleType) {
         this.vehicleType = vehicleType;
     }
-    
+
     public BigDecimal getCapacity() {
         return capacity;
     }
@@ -101,7 +107,7 @@ private Integer id;
     public void setCapacity(BigDecimal capacity) {
         this.capacity = capacity;
     }
-    
+
     public String getStatus() {
         return status;
     }
@@ -109,7 +115,7 @@ private Integer id;
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
     public Integer getManufactureYear() {
         return manufactureYear;
     }
@@ -117,7 +123,7 @@ private Integer id;
     public void setManufactureYear(Integer manufactureYear) {
         this.manufactureYear = manufactureYear;
     }
-    
+
     public LocalDate getInspectionExpiry() {
         return inspectionExpiry;
     }
@@ -125,7 +131,7 @@ private Integer id;
     public void setInspectionExpiry(LocalDate inspectionExpiry) {
         this.inspectionExpiry = inspectionExpiry;
     }
-    
+
     public LocalDate getInsuranceExpiry() {
         return insuranceExpiry;
     }
@@ -133,12 +139,28 @@ private Integer id;
     public void setInsuranceExpiry(LocalDate insuranceExpiry) {
         this.insuranceExpiry = insuranceExpiry;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(String currentLocation) {
+        this.currentLocation = currentLocation;
+    }
+
+    public Boolean getIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 }
