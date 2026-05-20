@@ -16,6 +16,9 @@ public class TripResponse {
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
 
+    private Integer routeId;
+    private String routeName;
+
     private String status;
 
     // GET SET
@@ -89,5 +92,21 @@ public class TripResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(Integer routeId) {
+        this.routeId = routeId;
+    }
+
+    public String getRouteName() {
+        return routeName;
+    }
+
+    public void setRouteName(String routeName) {
+        this.routeName = routeName;
     }
 }

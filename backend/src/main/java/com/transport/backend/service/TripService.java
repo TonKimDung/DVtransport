@@ -1,114 +1,300 @@
 package com.transport.backend.service;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.transport.backend.dto.trip.*;
-import com.transport.backend.entity.*;
-import com.transport.backend.repository.*;
-import com.transport.backend.repository.driver_assignment.VehicleDriverAssignmentRepository;
+import com.transport.backend.dto.order.OrderSimpleResponse;
+import com.transport.backend.dto.trip.CreateTripRequest;
+import com.transport.backend.dto.trip.TripResponse;
+import com.transport.backend.dto.trip.VehicleSuggestionResponse;
+import com.transport.backend.entity.Driver;
+import com.transport.backend.entity.Order;
+import com.transport.backend.entity.Route;
+import com.transport.backend.entity.Trip;
+import com.transport.backend.entity.TripOrder;
+import com.transport.backend.entity.Vehicle;
+import com.transport.backend.entity.VehicleDriverAssignment;
+import com.transport.backend.repository.OrderRepository;
+import com.transport.backend.repository.RouteRepository;
+import com.transport.backend.repository.TripOrderRepository;
 import com.transport.backend.repository.TripRepository;
+import com.transport.backend.repository.VehicleRepository;
+import com.transport.backend.repository.driver_assignment.VehicleDriverAssignmentRepository;
 
 @Service
 public class TripService {
 
-    private final TripRepository tripRepo;
-    private final VehicleRepository vehicleRepo;
-    private final DriverRepository driverRepo;
-    private final VehicleDriverAssignmentRepository assignmentRepo;
+        private final TripRepository tripRepo;
+        private final RouteRepository routeRepo;
+        private final VehicleRepository vehicleRepo;
+        private final OrderRepository orderRepo;
+        private final TripOrderRepository tripOrderRepo;
+        private final VehicleDriverAssignmentRepository assignmentRepo;
 
-    public TripService(
-            TripRepository tripRepo,
-            VehicleRepository vehicleRepo,
-            VehicleDriverAssignmentRepository assignmentRepo,
-            DriverRepository driverRepo) {
-
-        this.tripRepo = tripRepo;
-        this.vehicleRepo = vehicleRepo;
-        this.assignmentRepo = assignmentRepo;
-        this.driverRepo = driverRepo;
-    }
-
-    // 🚚 CREATE TRIP
-    // 🚛 CREATE TRIP (FIX LOGIC)
-    // 🚛 CREATE TRIP (FIX LOGIC)
-    public TripResponse create(Integer vehicleId) {
-
-        Vehicle vehicle = vehicleRepo.findById(vehicleId)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
-
-        VehicleDriverAssignment assignment = assignmentRepo
-                .findTopByVehicle_IdOrderByAssignedDateDesc(vehicleId)
-                .orElseThrow(() -> new RuntimeException("Vehicle chưa được gán tài xế"));
-
-        Driver driver = assignment.getDriver();
-
-        if (driver == null) {
-            throw new RuntimeException("Xe chưa có tài xế");
+        public TripService(
+                        TripRepository tripRepo,
+                        RouteRepository routeRepo,
+                        VehicleRepository vehicleRepo,
+                        OrderRepository orderRepo,
+                        TripOrderRepository tripOrderRepo,
+                        VehicleDriverAssignmentRepository assignmentRepo) {
+                this.tripRepo = tripRepo;
+                this.routeRepo = routeRepo;
+                this.vehicleRepo = vehicleRepo;
+                this.orderRepo = orderRepo;
+                this.tripOrderRepo = tripOrderRepo;
+                this.assignmentRepo = assignmentRepo;
         }
 
-        Trip trip = new Trip();
-        trip.setVehicle(vehicle);
-        trip.setDriver(driver);
-        trip.setDepartureTime(LocalDateTime.now());
-        trip.setStatus("CREATED");
-        trip.setTripCode("TRIP-" + System.currentTimeMillis());
+        // =====================================================
+        // GET ORDERS BY ROUTE
+        // =====================================================
 
-        Trip saved = tripRepo.save(trip);
+        public List<OrderSimpleResponse> getPendingOrdersByRoute(
+                        Integer routeId) {
 
-        return map(saved); // 🔥 QUAN TRỌNG
-    }
+                List<Order> orders = orderRepo.findByRoute_IdAndStatus(
+                                routeId,
+                                "CREATED");
 
-    // 👨‍✈️ ASSIGN DRIVER
-    public TripResponse assignDriver(Integer tripId, AssignTripRequest req) {
+                return orders.stream()
+                                .map(this::mapOrder)
+                                .toList();
+        }
+        // =====================================================
+        // SUGGEST VEHICLES
+        // =====================================================
 
-        Trip t = tripRepo.findById(tripId)
-                .orElseThrow(() -> new RuntimeException("Trip not found"));
+        public List<VehicleSuggestionResponse> suggestVehicles(
+                        Integer routeId) {
 
-        Driver d = driverRepo.findById(req.getDriverId())
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
+                List<Order> orders = orderRepo.findByRoute_IdAndStatus(
+                                routeId,
+                                "CREATED");
 
-        t.setDriver(d);
-        t.setStatus("ASSIGNED");
+                BigDecimal totalWeight = orders.stream()
+                                .map(Order::getWeight)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return map(tripRepo.save(t));
-    }
+                List<Vehicle> vehicles = vehicleRepo.findByStatusAndCapacityGreaterThanEqual(
+                                "AVAILABLE",
+                                totalWeight);
 
-    // 📄 GET ALL
-    public List<TripResponse> getAll() {
-        return tripRepo.findAll().stream().map(this::map).toList();
-    }
+                return vehicles.stream().map(v -> {
 
-    // 📄 GET DETAIL
-    public TripResponse getById(Integer id) {
-        return map(tripRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Trip not found")));
-    }
+                        VehicleSuggestionResponse res = new VehicleSuggestionResponse();
 
-    // 🔁 MAPPER
-    private TripResponse map(Trip t) {
+                        res.setVehicleId(v.getId());
+                        res.setPlateNumber(v.getPlateNumber());
+                        res.setVehicleType(v.getVehicleType());
+                        res.setCapacity(v.getCapacity());
+                        res.setCurrentLocation(v.getCurrentLocation());
 
-        TripResponse res = new TripResponse();
+                        assignmentRepo
+                                        .findTopByVehicle_IdOrderByAssignedDateDesc(v.getId())
+                                        .ifPresent(a -> {
+                                                res.setDriverName(
+                                                                a.getDriver().getFullName());
+                                        });
 
-        res.setId(t.getId());
-        res.setTripCode(t.getTripCode());
+                        return res;
 
-        if (t.getVehicle() != null) {
-            res.setVehicleId(t.getVehicle().getId());
-            res.setPlateNumber(t.getVehicle().getPlateNumber());
+                }).toList();
         }
 
-        if (t.getDriver() != null) {
-            res.setDriverId(t.getDriver().getId());
-            res.setDriverName(t.getDriver().getFullName());
+        // =====================================================
+        // CREATE TRIP
+        // =====================================================
+
+        @Transactional
+        public TripResponse createTrip(CreateTripRequest req) {
+
+                try {
+
+                        System.out.println("REQ = " + req.getVehicleId());
+
+                        Route route = routeRepo.findById(req.getRouteId())
+                                        .orElseThrow(() -> new RuntimeException("Route not found"));
+
+                        Vehicle vehicle = vehicleRepo.findById(req.getVehicleId())
+                                        .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+                        System.out.println("VEHICLE STATUS = " + vehicle.getStatus());
+
+                        if (!"AVAILABLE".equals(vehicle.getStatus())) {
+                                throw new RuntimeException(
+                                                "Vehicle not available: " + vehicle.getStatus());
+                        }
+
+                        VehicleDriverAssignment assignment = assignmentRepo
+                                        .findTopByVehicle_IdOrderByAssignedDateDesc(vehicle.getId())
+                                        .orElseThrow(() -> new RuntimeException(
+                                                        "Vehicle chưa có tài xế"));
+
+                        Driver driver = assignment.getDriver();
+
+                        List<Order> orders = orderRepo.findAllById(req.getOrderIds());
+
+                        System.out.println("ORDERS SIZE = " + orders.size());
+
+                        Trip trip = new Trip();
+
+                        trip.setTripCode("TRIP-" + System.currentTimeMillis());
+                        trip.setRoute(route);
+                        trip.setVehicle(vehicle);
+                        trip.setDriver(driver);
+                        trip.setDepartureTime(req.getDepartureTime());
+                        trip.setStatus("CREATED");
+
+                        Trip savedTrip = tripRepo.saveAndFlush(trip);
+
+                        System.out.println("TRIP SAVED = " + savedTrip.getId());
+
+                        for (Order order : orders) {
+
+                                TripOrder tripOrder = new TripOrder();
+
+                                tripOrder.setTrip(savedTrip);
+                                tripOrder.setOrder(order);
+                                tripOrder.setAllocatedWeight(order.getWeight());
+                                tripOrder.setAllocatedQuantity(order.getQuantity());
+                                tripOrder.setStatus("ASSIGNED");
+
+                                tripOrderRepo.save(tripOrder);
+
+                                order.setStatus("ASSIGNED");
+
+                                orderRepo.save(order);
+                        }
+
+                        vehicle.setStatus("IN_TRIP");
+
+                        vehicleRepo.save(vehicle);
+
+                        return map(savedTrip);
+
+                } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                        throw e;
+                }
+        }
+        // =====================================================
+        // GET ALL
+        // =====================================================
+
+        public List<TripResponse> getAll() {
+                return tripRepo.findAll().stream()
+                                .map(this::map)
+                                .toList();
         }
 
-        res.setDepartureTime(t.getDepartureTime());
-        res.setArrivalTime(t.getArrivalTime());
-        res.setStatus(t.getStatus());
+        // =====================================================
+        // GET DETAIL
+        // =====================================================
 
-        return res;
-    }
+        public TripResponse getById(Integer id) {
+
+                Trip trip = tripRepo.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Trip not found"));
+
+                return map(trip);
+        }
+
+        // =====================================================
+        // MAPPER
+        // =====================================================
+
+        private TripResponse map(Trip t) {
+
+                TripResponse res = new TripResponse();
+
+                res.setId(t.getId());
+                res.setTripCode(t.getTripCode());
+
+                // ROUTE
+                if (t.getRoute() != null) {
+
+                        res.setRouteId(
+                                        t.getRoute().getId());
+
+                        res.setRouteName(
+                                        t.getRoute()
+                                                        .getRouteName());
+                }
+
+                // VEHICLE
+                if (t.getVehicle() != null) {
+
+                        res.setVehicleId(
+                                        t.getVehicle().getId());
+
+                        res.setPlateNumber(
+                                        t.getVehicle()
+                                                        .getPlateNumber());
+                }
+
+                // DRIVER
+                if (t.getDriver() != null) {
+
+                        res.setDriverId(
+                                        t.getDriver().getId());
+
+                        res.setDriverName(
+                                        t.getDriver()
+                                                        .getFullName());
+                }
+
+                res.setDepartureTime(
+                                t.getDepartureTime());
+
+                res.setArrivalTime(
+                                t.getArrivalTime());
+
+                res.setStatus(
+                                t.getStatus());
+
+                return res;
+        }
+
+        private OrderSimpleResponse mapOrder(Order o) {
+
+                OrderSimpleResponse res = new OrderSimpleResponse();
+
+                res.setId(o.getId());
+
+                res.setOrderCode(o.getOrderCode());
+
+                res.setCargoType(o.getCargoType());
+
+                res.setWeight(o.getWeight());
+
+                res.setQuantity(o.getQuantity());
+
+                res.setPickupAddress(
+                                o.getPickupAddress());
+
+                res.setDeliveryAddress(
+                                o.getDeliveryAddress());
+
+                res.setStatus(o.getStatus());
+
+                res.setCreatedAt(
+                                o.getCreatedAt());
+
+                if (o.getRoute() != null) {
+
+                        res.setRouteId(
+                                        o.getRoute().getId());
+
+                        res.setRouteName(
+                                        o.getRoute().getRouteName());
+                }
+
+                return res;
+        }
 }

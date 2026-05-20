@@ -4,42 +4,76 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.transport.backend.dto.trip.*;
-import com.transport.backend.entity.Trip;
+import com.transport.backend.dto.order.OrderSimpleResponse;
+import com.transport.backend.dto.trip.CreateTripRequest;
+import com.transport.backend.dto.trip.TripResponse;
+import com.transport.backend.dto.trip.VehicleSuggestionResponse;
+import com.transport.backend.entity.Order;
 import com.transport.backend.service.TripService;
 
 @RestController
 @RequestMapping("/api/trips")
+@CrossOrigin("*")
 public class TripController {
 
-    private final TripService service;
+    private final TripService tripService;
 
-    public TripController(TripService service) {
-        this.service = service;
+    public TripController(TripService tripService) {
+        this.tripService = tripService;
     }
 
-    // 🚚 CREATE
-    @PostMapping
-    public TripResponse create(@RequestParam Integer vehicleId) {
-        return service.create(vehicleId);
-    }
+    // =====================================================
+    // GET ALL TRIPS
+    // =====================================================
 
-    // 👨‍✈️ ASSIGN DRIVER
-    @PutMapping("/{id}/assign-driver")
-    public TripResponse assign(@PathVariable Integer id,
-            @RequestBody AssignTripRequest req) {
-        return service.assignDriver(id, req);
-    }
-
-    // 📄 GET ALL
     @GetMapping
     public List<TripResponse> getAll() {
-        return service.getAll();
+        return tripService.getAll();
     }
 
-    // 📄 GET DETAIL
+    // =====================================================
+    // GET DETAIL
+    // =====================================================
+
     @GetMapping("/{id}")
     public TripResponse getById(@PathVariable Integer id) {
-        return service.getById(id);
+        return tripService.getById(id);
+    }
+
+    // =====================================================
+    // GET ORDERS BY ROUTE
+    // =====================================================
+
+    @GetMapping("/route/{routeId}/orders")
+    public List<OrderSimpleResponse> getOrdersByRoute(
+            @PathVariable Integer routeId) {
+
+        return tripService.getPendingOrdersByRoute(routeId);
+    }
+
+    // =====================================================
+    // SUGGEST VEHICLES
+    // =====================================================
+
+    @GetMapping("/route/{routeId}/vehicles")
+    public List<VehicleSuggestionResponse> suggestVehicles(
+            @PathVariable Integer routeId) {
+
+        return tripService.suggestVehicles(routeId);
+    }
+
+    // =====================================================
+    // CREATE TRIP
+    // =====================================================
+
+    @PostMapping
+    public TripResponse createTrip(
+            @RequestBody CreateTripRequest request) {
+
+        System.out.println("POST /trips called");
+
+        System.out.println(request.getDepartureTime());
+
+        return tripService.createTrip(request);
     }
 }
