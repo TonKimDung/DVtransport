@@ -1,7 +1,12 @@
 package com.transport.backend.dto.route;
 
-import lombok.*;
 import java.math.BigDecimal;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -15,4 +20,5 @@ public class RouteResponse {
     private String endLocation;
     private BigDecimal distanceKm;
     private BigDecimal estimatedHours;
+    private BigDecimal costPerTon;
 }
