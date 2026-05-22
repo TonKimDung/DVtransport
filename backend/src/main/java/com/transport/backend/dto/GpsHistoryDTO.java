@@ -7,12 +7,11 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class GpsDTO {
+public class GpsHistoryDTO {
+    private Integer id;
     private Integer tripId;
     private Integer vehicleId;
     private Double lat;
     private Double lng;
-    private LocalDateTime time;
-    private Double speed;
-    private Double distanceKm;
+    private LocalDateTime recordedAt;
 }

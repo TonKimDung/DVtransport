@@ -65,6 +65,21 @@ public class Trip {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "max_distance_km", precision = 10, scale = 2)
+    private Double maxDistanceKm; // giới hạn km
+
+    @Column(name = "current_distance_km", precision = 10, scale = 2)
+    private Double currentDistanceKm = 0.0;
+
+    @Column(name = "route_warning")
+    private Boolean routeWarning = false;
+
+    @Column(name = "estimated_arrival")
+    private LocalDateTime estimatedArrival;
+
+    @Column(name = "delay_warning")
+    private Boolean delayWarning = false;
+
     public Trip() {
     }
 
@@ -170,5 +185,45 @@ public class Trip {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Double getMaxDistanceKm() {
+        return maxDistanceKm;
+    }
+
+    public void setMaxDistanceKm(Double maxDistanceKm) {
+        this.maxDistanceKm = maxDistanceKm;
+    }
+
+    public Double getCurrentDistanceKm() {
+        return currentDistanceKm;
+    }
+
+    public void setCurrentDistanceKm(Double currentDistanceKm) {
+        this.currentDistanceKm = currentDistanceKm;
+    }
+
+    public Boolean getRouteWarning() {
+        return routeWarning;
+    }
+
+    public void setRouteWarning(Boolean routeWarning) {
+        this.routeWarning = routeWarning;
+    }
+
+    public LocalDateTime getEstimatedArrival() {
+        return estimatedArrival;
+    }
+
+    public void setEstimatedArrival(LocalDateTime estimatedArrival) {
+        this.estimatedArrival = estimatedArrival;
+    }
+
+    public Boolean getDelayWarning() {
+        return delayWarning;
+    }
+
+    public void setDelayWarning(Boolean delayWarning) {
+        this.delayWarning = delayWarning;
     }
 }
