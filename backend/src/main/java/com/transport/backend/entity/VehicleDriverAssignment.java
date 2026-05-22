@@ -17,8 +17,8 @@ import jakarta.persistence.Table;
 public class VehicleDriverAssignment {
 
     @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id", nullable = false)
@@ -34,15 +34,19 @@ private Integer id;
     @Column(columnDefinition = "TEXT")
     private String note;
 
+    @Column(name = "status")
+    private String status;
+
     public VehicleDriverAssignment() {
     }
 
-    public VehicleDriverAssignment( Vehicle vehicle, Driver driver, LocalDate assignedDate, String note) {
-        
+    public VehicleDriverAssignment(Vehicle vehicle, Driver driver, LocalDate assignedDate, String note) {
+
         this.vehicle = vehicle;
         this.driver = driver;
         this.assignedDate = assignedDate;
         this.note = note;
+        this.status = "ACTIVE"; // Set a default status
     }
 
     public Integer getId() {
@@ -52,7 +56,7 @@ private Integer id;
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public Vehicle getVehicle() {
         return vehicle;
     }
@@ -60,7 +64,7 @@ private Integer id;
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
     }
-    
+
     public Driver getDriver() {
         return driver;
     }
@@ -68,7 +72,7 @@ private Integer id;
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
-    
+
     public LocalDate getAssignedDate() {
         return assignedDate;
     }
@@ -76,12 +80,20 @@ private Integer id;
     public void setAssignedDate(LocalDate assignedDate) {
         this.assignedDate = assignedDate;
     }
-    
+
     public String getNote() {
         return note;
     }
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

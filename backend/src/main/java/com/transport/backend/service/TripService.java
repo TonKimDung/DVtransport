@@ -80,7 +80,7 @@ public class TripService {
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 List<Vehicle> vehicles = vehicleRepo.findByStatusAndCapacityGreaterThanEqual(
-                                "AVAILABLE",
+                                "Hoạt động",
                                 totalWeight);
 
                 return vehicles.stream().map(v -> {
@@ -124,7 +124,7 @@ public class TripService {
 
                         System.out.println("VEHICLE STATUS = " + vehicle.getStatus());
 
-                        if (!"AVAILABLE".equals(vehicle.getStatus())) {
+                        if (!"Hoạt động".equals(vehicle.getStatus())) {
                                 throw new RuntimeException(
                                                 "Vehicle not available: " + vehicle.getStatus());
                         }

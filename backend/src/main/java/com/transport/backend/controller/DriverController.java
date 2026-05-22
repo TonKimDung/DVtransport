@@ -42,4 +42,19 @@ public class DriverController {
     public void delete(@PathVariable Integer id) {
         driverService.delete(id);
     }
+
+    @PutMapping("/{id}/status")
+    public DriverDTO updateStatus(
+            @PathVariable Integer id,
+            @RequestParam String status) {
+        return driverService
+                .updateStatus(id, status);
+    }
+
+    @GetMapping("/available")
+    public List<DriverDTO> getAvailableDrivers() {
+
+        return driverService
+                .getAvailableDrivers();
+    }
 }

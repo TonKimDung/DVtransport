@@ -109,4 +109,19 @@ public class JobApplicationService {
     public void delete(Integer id) {
         repository.deleteById(id);
     }
+
+    public JobApplicationResponse updateStatus(
+            Integer id,
+            String status) {
+
+        JobApplication app = repository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "Không tìm thấy hồ sơ"));
+
+        app.setStatus(status);
+
+        return toResponse(repository.save(app));
+
+    }
 }

@@ -56,4 +56,16 @@ public class RecruitmentCampaignService {
     public void delete(Integer id) {
         repository.deleteById(id);
     }
+
+    public RecruitmentCampaign closeCampaign(
+            Integer id) {
+
+        RecruitmentCampaign campaign = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "Không tìm thấy đợt tuyển dụng"));
+
+        campaign.setStatus("CLOSED");
+
+        return repository.save(campaign);
+    }
 }
