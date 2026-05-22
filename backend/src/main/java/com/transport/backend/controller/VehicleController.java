@@ -44,8 +44,7 @@ public class VehicleController {
     @PutMapping("/{id}")
     public Vehicle updateVehicle(
             @PathVariable Integer id,
-            @RequestBody VehicleRequest request
-    ) {
+            @RequestBody VehicleRequest request) {
         return vehicleService.updateVehicle(id, request);
     }
 
@@ -53,5 +52,12 @@ public class VehicleController {
     public String deleteVehicle(@PathVariable Integer id) {
         vehicleService.deleteVehicle(id);
         return "Xóa phương tiện thành công";
+    }
+
+    @GetMapping("/available")
+    public List<Vehicle> getAvailableVehicles() {
+
+        return vehicleService
+                .getAvailableVehicles();
     }
 }

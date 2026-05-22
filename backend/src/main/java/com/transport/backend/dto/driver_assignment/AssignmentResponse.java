@@ -13,6 +13,7 @@ public class AssignmentResponse {
     private String driverName;
 
     private LocalDate assignedDate;
+    private String status;
 
     public Integer getId() {
         return id;
@@ -60,5 +61,13 @@ public class AssignmentResponse {
 
     public void setAssignedDate(LocalDate assignedDate) {
         this.assignedDate = assignedDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -1,20 +1,29 @@
 package com.transport.backend.service;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.transport.backend.entity.Driver;
+import com.transport.backend.entity.VehicleDriverAssignment;
 import com.transport.backend.repository.DriverRepository;
 import com.transport.backend.dto.driver.CreateDriverRequest;
 import com.transport.backend.dto.driver.UpdateDriverRequest;
 import com.transport.backend.dto.driver.DriverDTO;
 import com.transport.backend.mapper.DriverMapper;
+import com.transport.backend.repository.driver_assignment.VehicleDriverAssignmentRepository;
 
 @Service
 public class DriverService {
 
     @Autowired
     private DriverRepository driverRepository;
+
+    @Autowired
+    private VehicleDriverAssignmentRepository assignmentRepo;
 
     public DriverDTO create(CreateDriverRequest req) {
 
@@ -78,5 +87,44 @@ public class DriverService {
         }
 
         driverRepository.deleteById(id);
+    }
+
+    public DriverDTO updateStatus(Integer id, String status) {
+        Driver d = driverRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+
+        d.setStatus(status);
+        driverRepository.save(d);
+
+        return DriverMapper.toDTO(d);
+    }
+
+    public List<DriverDTO> getAvailableDrivers() {
+
+        // lấy assignment ACTIVE
+        List<VehicleDriverAssignment> activeAssignments = assignmentRepo.findByStatus(
+                "ACTIVE");
+
+        // lấy id tài xế đã phân công
+        Set<Integer> assignedDriverIds = activeAssignments
+                .stream()
+                .map(a -> a.getDriver()
+                        .getId())
+                .collect(
+                        Collectors.toSet());
+
+        // lọc tài xế chưa bị phân công
+        List<Driver> availableDrivers = driverRepository.findAll()
+                .stream()
+                .filter(d -> !assignedDriverIds
+                        .contains(
+                                d.getId()))
+                .toList();
+
+        return availableDrivers
+                .stream()
+                .map(
+                        DriverMapper::toDTO)
+                .toList();
     }
 }

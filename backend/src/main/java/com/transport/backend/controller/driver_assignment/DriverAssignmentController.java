@@ -36,4 +36,11 @@ public class DriverAssignmentController {
     public DriverWorkResponse getWork(@PathVariable Integer driverId) {
         return service.getWorkToday(driverId);
     }
+
+    @PutMapping("/{id}/deactivate")
+    public AssignmentResponse deactivate(
+            @PathVariable Integer id) {
+        return service
+                .deactivate(id);
+    }
 }

@@ -48,4 +48,12 @@ public class JobApplicationController {
     public void delete(@PathVariable Integer id) {
         service.delete(id);
     }
+
+    @PutMapping("/{id}/status")
+    public JobApplicationResponse updateStatus(
+            @PathVariable Integer id,
+            @RequestParam String status) {
+        return service
+                .updateStatus(id, status);
+    }
 }
