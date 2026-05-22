@@ -14,7 +14,7 @@ import com.transport.backend.entity.Vehicle;
 import com.transport.backend.entity.VehicleDriverAssignment;
 import com.transport.backend.repository.DriverRepository;
 import com.transport.backend.repository.VehicleRepository;
-import com.transport.backend.repository.driver_assignment.*;
+import com.transport.backend.repository.driver_assignment.DriverWorkLogRepository;
 import com.transport.backend.repository.driver_assignment.VehicleDriverAssignmentRepository;
 
 @Service
@@ -37,69 +37,127 @@ public class DriverAssignmentService {
         this.workLogRepo = workLogRepo;
     }
 
-    // 🚗 1. GÁN TÀI XẾ
-    public AssignmentResponse assign(AssignDriverRequest req) {
+    // ==========================
+    // 1. GÁN TÀI XẾ
+    // ==========================
+    public AssignmentResponse assign(
+            AssignDriverRequest req) {
 
-        Vehicle vehicle = vehicleRepo.findById(req.getVehicleId())
-                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        Driver driver = driverRepo.findById(
+                req.getDriverId())
+                .orElseThrow(() -> new RuntimeException(
+                        "Không tìm thấy tài xế"));
 
-        Driver driver = driverRepo.findById(req.getDriverId())
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
+        Vehicle vehicle = vehicleRepo.findById(
+                req.getVehicleId())
+                .orElseThrow(() -> new RuntimeException(
+                        "Không tìm thấy phương tiện"));
 
-        VehicleDriverAssignment entity = new VehicleDriverAssignment();
-        entity.setVehicle(vehicle);
-        entity.setDriver(driver);
-        entity.setAssignedDate(LocalDate.now());
+        VehicleDriverAssignment assignment = new VehicleDriverAssignment();
 
-        return map(assignmentRepo.save(entity));
+        assignment.setDriver(driver);
+        assignment.setVehicle(vehicle);
+        assignment.setAssignedDate(
+                req.getAssignedDate());
+
+        assignment.setStatus(
+                "ACTIVE");
+
+        assignmentRepo.save(
+                assignment);
+
+        return map(
+                assignment);
     }
 
-    // 📄 GET ALL ASSIGNMENTS
+    // ==========================
+    // 2. GET ALL ASSIGNMENTS
+    // ==========================
     public List<AssignmentResponse> getAll() {
+
         return assignmentRepo.findAll()
                 .stream()
                 .map(this::map)
                 .toList();
     }
 
-    // ⏱️ 2. THEO DÕI GIỜ LÀM
-    public DriverWorkResponse getWorkToday(Integer driverId) {
+    // ==========================
+    // 3. THEO DÕI GIỜ LÀM
+    // ==========================
+    public DriverWorkResponse getWorkToday(
+            Integer driverId) {
 
-        List<DriverWorkLog> logs = workLogRepo.findByDriver_IdAndWorkDate(driverId, LocalDate.now());
+        List<DriverWorkLog> logs = workLogRepo.findByDriver_IdAndWorkDate(
+                driverId,
+                LocalDate.now());
 
         double totalHours = logs.stream()
-                .mapToDouble(l -> l.getDrivingHours() == null ? 0 : l.getDrivingHours().doubleValue())
+                .mapToDouble(log -> log.getDrivingHours() == null
+                        ? 0
+                        : log.getDrivingHours()
+                                .doubleValue())
                 .sum();
 
         DriverWorkResponse res = new DriverWorkResponse();
+
         res.setDriverId(driverId);
         res.setTotalHours(totalHours);
 
-        // 🚨 3. CẢNH BÁO QUÁ GIỜ (ví dụ > 10h)
-        res.setOverworked(totalHours > 10);
+        // quá 10 giờ
+        res.setOverworked(
+                totalHours > 10);
 
         return res;
     }
 
-    // 🔁 MAPPER
-    private AssignmentResponse map(VehicleDriverAssignment e) {
+    // ==========================
+    // MAPPER
+    // ==========================
+    private AssignmentResponse map(
+            VehicleDriverAssignment e) {
 
         AssignmentResponse res = new AssignmentResponse();
 
         res.setId(e.getId());
 
         if (e.getVehicle() != null) {
-            res.setVehicleId(e.getVehicle().getId());
-            res.setPlateNumber(e.getVehicle().getPlateNumber());
+            res.setVehicleId(
+                    e.getVehicle().getId());
+
+            res.setPlateNumber(
+                    e.getVehicle()
+                            .getPlateNumber());
         }
 
         if (e.getDriver() != null) {
-            res.setDriverId(e.getDriver().getId());
-            res.setDriverName(e.getDriver().getFullName());
+            res.setDriverId(
+                    e.getDriver().getId());
+
+            res.setDriverName(
+                    e.getDriver()
+                            .getFullName());
         }
 
-        res.setAssignedDate(e.getAssignedDate());
+        res.setAssignedDate(
+                e.getAssignedDate());
+
+        res.setStatus(
+                e.getStatus());
 
         return res;
+    }
+
+    public AssignmentResponse deactivate(
+            Integer id) {
+
+        VehicleDriverAssignment assignment = assignmentRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException(
+                        "Không tìm thấy phân công"));
+
+        assignment.setStatus("INACTIVE");
+
+        assignmentRepo.save(assignment);
+
+        return map(assignment);
     }
 }

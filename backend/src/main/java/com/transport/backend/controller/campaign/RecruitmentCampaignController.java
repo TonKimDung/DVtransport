@@ -43,4 +43,10 @@ public class RecruitmentCampaignController {
     public void delete(@PathVariable Integer id) {
         service.delete(id);
     }
+
+    @PutMapping("/{id}/close")
+    public RecruitmentCampaign closeCampaign(
+            @PathVariable Integer id) {
+        return service.closeCampaign(id);
+    }
 }

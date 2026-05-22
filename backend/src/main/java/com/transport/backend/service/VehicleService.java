@@ -2,12 +2,16 @@ package com.transport.backend.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.transport.backend.dto.vehicle.VehicleRequest;
 import com.transport.backend.entity.Vehicle;
+import com.transport.backend.entity.VehicleDriverAssignment;
 import com.transport.backend.repository.VehicleRepository;
+import com.transport.backend.repository.driver_assignment.VehicleDriverAssignmentRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
+    private final VehicleDriverAssignmentRepository assignmentRepo;
 
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findAll();
@@ -64,5 +69,30 @@ public class VehicleService {
     public void deleteVehicle(Integer id) {
         Vehicle vehicle = getVehicleById(id);
         vehicleRepository.delete(vehicle);
+    }
+
+    public List<Vehicle> getAvailableVehicles() {
+
+        // lấy assignment ACTIVE
+        List<VehicleDriverAssignment> activeAssignments = assignmentRepo
+                .findByStatus(
+                        "ACTIVE");
+
+        // lấy id xe đang được gán
+        Set<Integer> assignedVehicleIds = activeAssignments
+                .stream()
+                .map(a -> a.getVehicle()
+                        .getId())
+                .collect(
+                        Collectors.toSet());
+
+        // lọc xe chưa được gán
+        return vehicleRepository
+                .findAll()
+                .stream()
+                .filter(v -> !assignedVehicleIds
+                        .contains(
+                                v.getId()))
+                .toList();
     }
 }
