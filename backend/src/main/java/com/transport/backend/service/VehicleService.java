@@ -36,6 +36,7 @@ public class VehicleService {
                 .vehicleType(request.getVehicleType())
                 .capacity(request.getCapacity())
                 .status(request.getStatus())
+                .currentLocation(request.getCurrentLocation())
                 .manufactureYear(request.getManufactureYear())
                 .inspectionExpiry(request.getInspectionExpiry())
                 .insuranceExpiry(request.getInsuranceExpiry())
@@ -52,6 +53,7 @@ public class VehicleService {
         vehicle.setVehicleType(request.getVehicleType());
         vehicle.setCapacity(request.getCapacity());
         vehicle.setStatus(request.getStatus());
+        vehicle.setCurrentLocation(request.getCurrentLocation());
         vehicle.setManufactureYear(request.getManufactureYear());
         vehicle.setInspectionExpiry(request.getInspectionExpiry());
         vehicle.setInsuranceExpiry(request.getInsuranceExpiry());

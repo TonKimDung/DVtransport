@@ -63,13 +63,14 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(String plateNumber, String vehicleType, BigDecimal capacity, String status,
+    public Vehicle(String plateNumber, String vehicleType, BigDecimal capacity, String status, String currentLocation,
             Integer manufactureYear, LocalDate inspectionExpiry, LocalDate insuranceExpiry, LocalDateTime createdAt) {
 
         this.plateNumber = plateNumber;
         this.vehicleType = vehicleType;
         this.capacity = capacity;
         this.status = status;
+        this.currentLocation = currentLocation;
         this.manufactureYear = manufactureYear;
         this.inspectionExpiry = inspectionExpiry;
         this.insuranceExpiry = insuranceExpiry;

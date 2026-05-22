@@ -16,6 +16,7 @@ public class VehicleRequest {
     private String plateNumber;
     private String vehicleType;
     private BigDecimal capacity;
+    private String currentLocation;
     private String status;
     private Integer manufactureYear;
     private LocalDate inspectionExpiry;
