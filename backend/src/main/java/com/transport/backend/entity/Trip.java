@@ -65,10 +65,10 @@ public class Trip {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "max_distance_km", precision = 10, scale = 2)
+    @Column(name = "max_distance_km")
     private Double maxDistanceKm; // giới hạn km
 
-    @Column(name = "current_distance_km", precision = 10, scale = 2)
+    @Column(name = "current_distance_km")
     private Double currentDistanceKm = 0.0;
 
     @Column(name = "route_warning")
