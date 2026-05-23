@@ -66,10 +66,10 @@ public class Trip {
     private LocalDateTime createdAt;
 
     @Column(name = "max_distance_km", precision = 10, scale = 2)
-    private Double maxDistanceKm; // giới hạn km
+    private BigDecimal maxDistanceKm; // giới hạn km
 
     @Column(name = "current_distance_km", precision = 10, scale = 2)
-    private Double currentDistanceKm = 0.0;
+    private BigDecimal currentDistanceKm = BigDecimal.ZERO;
 
     @Column(name = "route_warning")
     private Boolean routeWarning = false;
@@ -188,19 +188,19 @@ public class Trip {
     }
 
     public Double getMaxDistanceKm() {
-        return maxDistanceKm;
+        return maxDistanceKm != null ? maxDistanceKm.doubleValue() : null;
     }
 
     public void setMaxDistanceKm(Double maxDistanceKm) {
-        this.maxDistanceKm = maxDistanceKm;
+        this.maxDistanceKm = maxDistanceKm != null ? BigDecimal.valueOf(maxDistanceKm) : null;
     }
 
     public Double getCurrentDistanceKm() {
-        return currentDistanceKm;
+        return currentDistanceKm != null ? currentDistanceKm.doubleValue() : null;
     }
 
     public void setCurrentDistanceKm(Double currentDistanceKm) {
-        this.currentDistanceKm = currentDistanceKm;
+        this.currentDistanceKm = currentDistanceKm != null ? BigDecimal.valueOf(currentDistanceKm) : null;
     }
 
     public Boolean getRouteWarning() {
