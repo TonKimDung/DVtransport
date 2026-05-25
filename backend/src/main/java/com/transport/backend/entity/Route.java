@@ -40,6 +40,9 @@ private Integer id;
     @Column(name = "estimated_hours", precision = 15, scale = 2)
     private BigDecimal estimatedHours;
 
+    @Column(name = "cost_per_ton", precision = 15, scale = 2)
+    private BigDecimal costPerTon;
+
     public Route() {
     }
 
