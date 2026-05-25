@@ -76,4 +76,12 @@ public class TripController {
 
         return tripService.createTrip(request);
     }
+
+    @GetMapping("/driver/{driverId}/current")
+    public TripResponse getCurrentTrip(
+            @PathVariable Integer driverId) {
+
+        return tripService.getCurrentTripByDriver(
+                driverId);
+    }
 }

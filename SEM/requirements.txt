@@ -1,8 +1,10 @@
 fastapi
 uvicorn
 pandas
+numpy
 sqlalchemy
 psycopg2-binary
 semopy
 scikit-learn
-numpy
+matplotlib
+python-dotenv

@@ -2,6 +2,8 @@ package com.transport.backend.dto.trip;
 
 import java.time.LocalDateTime;
 
+import com.transport.backend.entity.Trip;
+
 public class TripResponse {
 
     private Integer id;
@@ -109,4 +111,10 @@ public class TripResponse {
     public void setRouteName(String routeName) {
         this.routeName = routeName;
     }
+
+    public Trip orElseThrow(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
+
 }

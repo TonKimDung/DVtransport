@@ -297,4 +297,21 @@ public class TripService {
 
                 return res;
         }
+
+        // =====================================================
+        // CURRENT TRIP BY DRIVER
+        // =====================================================
+
+        public TripResponse getCurrentTripByDriver(
+                        Integer driverId) {
+
+                Trip trip = tripRepo
+                                .findTopByDriver_IdAndStatusOrderByDepartureTimeDesc(
+                                                driverId,
+                                                "CREATED")
+                                .orElseThrow(() -> new RuntimeException(
+                                                "Driver chưa có trip"));
+
+                return map(trip);
+        }
 }
