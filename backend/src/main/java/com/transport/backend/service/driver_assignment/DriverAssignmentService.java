@@ -13,8 +13,8 @@ import com.transport.backend.entity.DriverWorkLog;
 import com.transport.backend.entity.Vehicle;
 import com.transport.backend.entity.VehicleDriverAssignment;
 import com.transport.backend.repository.DriverRepository;
+import com.transport.backend.repository.DriverWorkLogRepository;
 import com.transport.backend.repository.VehicleRepository;
-import com.transport.backend.repository.driver_assignment.DriverWorkLogRepository;
 import com.transport.backend.repository.driver_assignment.VehicleDriverAssignmentRepository;
 
 @Service

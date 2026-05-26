@@ -1,6 +1,6 @@
 package com.transport.backend.entity;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,13 +21,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "payrolls")
+@Table(name = "driver_licenses")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Payroll {
+public class DriverLicense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,21 +37,20 @@ public class Payroll {
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
 
-    private Integer month;
+    @Column(name = "license_number")
+    private String licenseNumber;
 
-    private Integer year;
+    @Column(name = "license_class")
+    private String licenseClass;
 
-    @Column(name = "total_salary", precision = 15, scale = 2)
-    private BigDecimal totalSalary;
+    @Column(name = "issue_date")
+    private LocalDate issueDate;
 
-    @Column(name = "bonus_amount", precision = 15, scale = 2)
-    private BigDecimal bonusAmount;
+    @Column(name = "expiry_date")
+    private LocalDate expiryDate;
 
-    @Column(name = "penalty_amount", precision = 15, scale = 2)
-    private BigDecimal penaltyAmount;
-
-    @Column(name = "final_amount", precision = 15, scale = 2)
-    private BigDecimal finalAmount;
+    @Column(name = "file_url", columnDefinition = "TEXT")
+    private String fileUrl;
 
     private String status;
 

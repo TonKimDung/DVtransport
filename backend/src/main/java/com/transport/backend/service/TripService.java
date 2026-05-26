@@ -1,6 +1,10 @@
 package com.transport.backend.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,12 +15,14 @@ import com.transport.backend.dto.trip.CreateTripRequest;
 import com.transport.backend.dto.trip.TripResponse;
 import com.transport.backend.dto.trip.VehicleSuggestionResponse;
 import com.transport.backend.entity.Driver;
+import com.transport.backend.entity.DriverWorkLog;
 import com.transport.backend.entity.Order;
 import com.transport.backend.entity.Route;
 import com.transport.backend.entity.Trip;
 import com.transport.backend.entity.TripOrder;
 import com.transport.backend.entity.Vehicle;
 import com.transport.backend.entity.VehicleDriverAssignment;
+import com.transport.backend.repository.DriverWorkLogRepository;
 import com.transport.backend.repository.OrderRepository;
 import com.transport.backend.repository.RouteRepository;
 import com.transport.backend.repository.TripOrderRepository;
@@ -33,6 +39,7 @@ public class TripService {
         private final OrderRepository orderRepo;
         private final TripOrderRepository tripOrderRepo;
         private final VehicleDriverAssignmentRepository assignmentRepo;
+        private final DriverWorkLogRepository driverWorkLogRepo;
 
         public TripService(
                         TripRepository tripRepo,
@@ -40,13 +47,15 @@ public class TripService {
                         VehicleRepository vehicleRepo,
                         OrderRepository orderRepo,
                         TripOrderRepository tripOrderRepo,
-                        VehicleDriverAssignmentRepository assignmentRepo) {
+                        VehicleDriverAssignmentRepository assignmentRepo,
+                        DriverWorkLogRepository driverWorkLogRepo) {
                 this.tripRepo = tripRepo;
                 this.routeRepo = routeRepo;
                 this.vehicleRepo = vehicleRepo;
                 this.orderRepo = orderRepo;
                 this.tripOrderRepo = tripOrderRepo;
                 this.assignmentRepo = assignmentRepo;
+                this.driverWorkLogRepo = driverWorkLogRepo;
         }
 
         // =====================================================
@@ -314,4 +323,63 @@ public class TripService {
 
                 return map(trip);
         }
+
+        //Set hoàn thành
+
+        public void completeTrip(Integer tripId) {
+    Trip trip = tripRepo.findById(tripId)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến đi"));
+
+    trip.setStatus("COMPLETED");
+    trip.setArrivalTime(LocalDateTime.now());
+    tripRepo.save(trip);
+
+    List<TripOrder> tripOrders = tripOrderRepo.findByTripId(tripId);
+
+    for (TripOrder tripOrder : tripOrders) {
+        Order order = tripOrder.getOrder();
+
+        if (order != null) {
+            order.setStatus("COMPLETED");
+            orderRepo.save(order);
+
+            tripOrder.setStatus("COMPLETED");
+        }
+    }
+
+    tripOrderRepo.saveAll(tripOrders);
+
+    if (trip.getDriver() == null) {
+        throw new RuntimeException("Chuyến đi chưa có tài xế");
+    }
+
+    boolean existed = driverWorkLogRepo.existsByDriverIdAndTripId(
+            trip.getDriver().getId(),
+            trip.getId()
+    );
+
+    if (!existed) {
+        BigDecimal drivingHours = BigDecimal.ZERO;
+
+        if (trip.getDepartureTime() != null && trip.getArrivalTime() != null) {
+            long minutes = Duration.between(
+                    trip.getDepartureTime(),
+                    trip.getArrivalTime()
+            ).toMinutes();
+
+            drivingHours = BigDecimal.valueOf(minutes)
+                    .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+        }
+
+        DriverWorkLog log = DriverWorkLog.builder()
+                .driver(trip.getDriver())
+                .trip(trip)
+                .workDate(LocalDate.now())
+                .drivingHours(drivingHours)
+                .tripCount(1)
+                .build();
+
+        driverWorkLogRepo.save(log);
+    }
+}
 }

@@ -38,6 +38,10 @@ private Integer id;
     @JoinColumn(name = "partner_id")
     private Partner partner;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_id")
+    private Driver driver;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 

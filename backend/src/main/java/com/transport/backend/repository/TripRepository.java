@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.transport.backend.entity.Trip;
 
 public interface TripRepository extends JpaRepository<Trip, Integer> {
@@ -17,4 +18,11 @@ public interface TripRepository extends JpaRepository<Trip, Integer> {
     Optional<Trip> findTopByDriver_IdAndStatusOrderByDepartureTimeDesc(
             Integer driverId,
             String status);
+
+    List<Trip> findByDriverIdAndStatusAndArrivalTimeBetween(
+    Integer driverId,
+    String status,
+    LocalDateTime start,
+    LocalDateTime end
+);
 }

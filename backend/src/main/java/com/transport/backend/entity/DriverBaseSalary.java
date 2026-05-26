@@ -21,13 +21,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "payrolls")
+@Table(name = "driver_base_salaries")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Payroll {
+public class DriverBaseSalary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,21 +37,12 @@ public class Payroll {
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
 
-    private Integer month;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_license_id")
+    private DriverLicense driverLicense;
 
-    private Integer year;
-
-    @Column(name = "total_salary", precision = 15, scale = 2)
-    private BigDecimal totalSalary;
-
-    @Column(name = "bonus_amount", precision = 15, scale = 2)
-    private BigDecimal bonusAmount;
-
-    @Column(name = "penalty_amount", precision = 15, scale = 2)
-    private BigDecimal penaltyAmount;
-
-    @Column(name = "final_amount", precision = 15, scale = 2)
-    private BigDecimal finalAmount;
+    @Column(name = "base_salary", precision = 15, scale = 2)
+    private BigDecimal baseSalary;
 
     private String status;
 

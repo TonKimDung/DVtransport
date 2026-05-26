@@ -2,13 +2,19 @@ package com.transport.backend.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.transport.backend.dto.order.OrderSimpleResponse;
 import com.transport.backend.dto.trip.CreateTripRequest;
 import com.transport.backend.dto.trip.TripResponse;
 import com.transport.backend.dto.trip.VehicleSuggestionResponse;
-import com.transport.backend.entity.Order;
 import com.transport.backend.service.TripService;
 
 @RestController
@@ -83,5 +89,11 @@ public class TripController {
 
         return tripService.getCurrentTripByDriver(
                 driverId);
+    }
+
+    @PatchMapping("/{id}/complete")
+        public String completeTrip(@PathVariable Integer id) {
+            tripService.completeTrip(id);
+            return "Hoàn thành chuyến đi, cập nhật đơn hàng và ghi work log thành công";
     }
 }
