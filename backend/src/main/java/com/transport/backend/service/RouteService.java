@@ -1,13 +1,15 @@
 package com.transport.backend.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.transport.backend.dto.route.RouteRequest;
 import com.transport.backend.dto.route.RouteResponse;
 import com.transport.backend.entity.Route;
 import com.transport.backend.repository.RouteRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class RouteService {
                 .endLocation(route.getEndLocation())
                 .distanceKm(route.getDistanceKm())
                 .estimatedHours(route.getEstimatedHours())
+                .costPerTon(route.getCostPerTon())
                 .build();
     }
 
@@ -50,6 +53,7 @@ public class RouteService {
                 .endLocation(request.getEndLocation())
                 .distanceKm(request.getDistanceKm())
                 .estimatedHours(request.getEstimatedHours())
+                .costPerTon(request.getCostPerTon())
                 .build();
 
         return toResponse(routeRepository.save(route));
@@ -64,6 +68,7 @@ public class RouteService {
         route.setEndLocation(request.getEndLocation());
         route.setDistanceKm(request.getDistanceKm());
         route.setEstimatedHours(request.getEstimatedHours());
+        route.setCostPerTon(request.getCostPerTon());
 
         return toResponse(routeRepository.save(route));
     }

@@ -98,7 +98,7 @@ public class OrderService {
                 .pickupAddress(request.getPickupAddress())
                 .deliveryAddress(request.getDeliveryAddress())
                 .totalAmount(request.getTotalAmount())
-                .status(request.getStatus() != null ? request.getStatus() : "Chờ nhận")
+                .status(request.getStatus() != null ? request.getStatus() : "CREATED")
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -156,7 +156,7 @@ public class OrderService {
 
         return vehicleRepository.findByCapacityGreaterThanEqualAndStatus(
                 order.getWeight(),
-                "Đang hoạt động");
+                "ACTIVE");
     }
 
     public List<Order> getDailyPlan(LocalDate date) {

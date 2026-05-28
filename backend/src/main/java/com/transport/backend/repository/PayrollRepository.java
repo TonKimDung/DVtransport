@@ -1,9 +1,10 @@
 package com.transport.backend.repository;
+import java.util.List;
+import java.util.Optional;
 
-import com.transport.backend.entity.Payroll;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.transport.backend.entity.Payroll;
 
 public interface PayrollRepository extends JpaRepository<Payroll, Integer> {
 
@@ -12,4 +13,5 @@ public interface PayrollRepository extends JpaRepository<Payroll, Integer> {
 
     // Lấy lương theo tài xế
     List<Payroll> findByDriverId(Integer driverId);
+    Optional<Payroll> findByDriverIdAndMonthAndYear(Integer driverId, Integer month, Integer year);
 }

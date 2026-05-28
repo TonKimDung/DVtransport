@@ -1,6 +1,6 @@
 package com.transport.backend.entity;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,37 +21,36 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "payrolls")
+@Table(name = "vehicle_documents")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Payroll {
+public class VehicleDocument {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id", nullable = false)
-    private Driver driver;
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
 
-    private Integer month;
+    @Column(name = "document_type")
+    private String documentType;
 
-    private Integer year;
+    @Column(name = "document_name")
+    private String documentName;
 
-    @Column(name = "total_salary", precision = 15, scale = 2)
-    private BigDecimal totalSalary;
+    @Column(name = "file_url", columnDefinition = "TEXT")
+    private String fileUrl;
 
-    @Column(name = "bonus_amount", precision = 15, scale = 2)
-    private BigDecimal bonusAmount;
+    @Column(name = "issue_date")
+    private LocalDate issueDate;
 
-    @Column(name = "penalty_amount", precision = 15, scale = 2)
-    private BigDecimal penaltyAmount;
-
-    @Column(name = "final_amount", precision = 15, scale = 2)
-    private BigDecimal finalAmount;
+    @Column(name = "expiry_date")
+    private LocalDate expiryDate;
 
     private String status;
 
