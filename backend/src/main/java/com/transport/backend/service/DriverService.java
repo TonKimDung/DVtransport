@@ -127,4 +127,13 @@ public class DriverService {
                         DriverMapper::toDTO)
                 .toList();
     }
+
+    public List<DriverDTO> getDriversWithoutContract() {
+
+        return driverRepository
+                .findDriversWithoutContract()
+                .stream()
+                .map(DriverMapper::toDTO)
+                .toList();
+    }
 }

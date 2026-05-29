@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.transport.backend.dto.contract.CustomerRequest;
 import com.transport.backend.dto.contract.CustomerResponse;
+import com.transport.backend.dto.driver.DriverDTO;
 import com.transport.backend.service.contract.CustomerService;
 
 @RestController
@@ -41,5 +42,10 @@ public class CustomerController {
     public String delete(@PathVariable Integer id) {
         service.delete(id);
         return "Deleted successfully";
+    }
+
+    @GetMapping("/available-contract")
+    public List<CustomerResponse> getCustomersWithoutContract() {
+        return service.getAvailable();
     }
 }

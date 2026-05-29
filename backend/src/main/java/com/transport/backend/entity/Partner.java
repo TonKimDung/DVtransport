@@ -16,14 +16,14 @@ import jakarta.persistence.Table;
 public class Partner {
 
     @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(name = "partner_type", length = 255)
-    private String partnerType;
+    @Column(name = "status", length = 255)
+    private String status;
 
     @Column(length = 255)
     private String phone;
@@ -41,15 +41,23 @@ private Integer id;
     public Partner() {
     }
 
-    public Partner( String name, String partnerType, String phone, String email, String address,
+    public Partner(String name, String status, String phone, String email, String address,
             LocalDateTime createdAt) {
-        
+
         this.name = name;
-        this.partnerType = partnerType;
+        this.status = status;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.createdAt = createdAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Integer getId() {
@@ -59,7 +67,7 @@ private Integer id;
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -67,15 +75,7 @@ private Integer id;
     public void setName(String name) {
         this.name = name;
     }
-    
-    public String getPartnerType() {
-        return partnerType;
-    }
 
-    public void setPartnerType(String partnerType) {
-        this.partnerType = partnerType;
-    }
-    
     public String getPhone() {
         return phone;
     }
@@ -83,7 +83,7 @@ private Integer id;
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -91,7 +91,7 @@ private Integer id;
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public String getAddress() {
         return address;
     }
@@ -99,7 +99,7 @@ private Integer id;
     public void setAddress(String address) {
         this.address = address;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

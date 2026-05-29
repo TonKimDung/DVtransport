@@ -6,7 +6,15 @@ public class CustomerRequest {
     private String phone;
     private String email;
     private String address;
-    private String taxCode;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     // getter setter
     public String getName() {
@@ -39,13 +47,5 @@ public class CustomerRequest {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getTaxCode() {
-        return taxCode;
-    }
-
-    public void setTaxCode(String taxCode) {
-        this.taxCode = taxCode;
     }
 }
