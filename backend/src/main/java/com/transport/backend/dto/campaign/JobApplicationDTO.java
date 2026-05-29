@@ -1,5 +1,7 @@
 package com.transport.backend.dto.campaign;
 
+import java.time.LocalDate;
+
 public class JobApplicationDTO {
 
     private Integer campaignId;
@@ -9,6 +11,11 @@ public class JobApplicationDTO {
     private String address;
     private Integer experienceYears;
     private String status;
+    private String licenseNumber;
+    private LocalDate licenseExpiry;
+    private String licenseClass;
+    private String licenseImage;
+    private LocalDate licenseIssueDate;
 
     public Integer getCampaignId() {
         return campaignId;
@@ -64,5 +71,45 @@ public class JobApplicationDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
+
+    public LocalDate getLicenseExpiry() {
+        return licenseExpiry;
+    }
+
+    public void setLicenseExpiry(LocalDate licenseExpiry) {
+        this.licenseExpiry = licenseExpiry;
+    }
+
+    public String getLicenseClass() {
+        return licenseClass;
+    }
+
+    public void setLicenseClass(String licenseClass) {
+        this.licenseClass = licenseClass;
+    }
+
+    public String getLicenseImage() {
+        return licenseImage;
+    }
+
+    public void setLicenseImage(String licenseImage) {
+        this.licenseImage = licenseImage;
+    }
+
+    public LocalDate getLicenseIssueDate() {
+        return licenseIssueDate;
+    }
+
+    public void setLicenseIssueDate(LocalDate licenseIssueDate) {
+        this.licenseIssueDate = licenseIssueDate;
     }
 }

@@ -3,45 +3,38 @@ package com.transport.backend.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.CreationTimestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "driver_licenses")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class DriverLicense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // =========================
+    // DRIVER
+    // =========================
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id", nullable = false)
+    @JoinColumn(name = "driver_id")
     private Driver driver;
 
-    @Column(name = "license_number")
-    private String licenseNumber;
+    // =========================
+    // LICENSE TYPE
+    // =========================
 
-    @Column(name = "license_class")
-    private String licenseClass;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "license_type_id")
+    private LicenseType licenseType;
+
+    // =========================
+    // INFO
+    // =========================
+
+    @Column(name = "license_number", unique = true)
+    private String licenseNumber;
 
     @Column(name = "issue_date")
     private LocalDate issueDate;
@@ -49,12 +42,99 @@ public class DriverLicense {
     @Column(name = "expiry_date")
     private LocalDate expiryDate;
 
-    @Column(name = "file_url", columnDefinition = "TEXT")
-    private String fileUrl;
-
+    @Column(length = 50)
     private String status;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    // =========================
+    // AUTO CREATED AT
+    // =========================
+
+    @PrePersist
+    public void prePersist() {
+
+        createdAt = LocalDateTime.now();
+    }
+
+    // =========================
+    // GETTER SETTER
+    // =========================
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    public LicenseType getLicenseType() {
+        return licenseType;
+    }
+
+    public void setLicenseType(
+            LicenseType licenseType) {
+
+        this.licenseType = licenseType;
+    }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(
+            String licenseNumber) {
+
+        this.licenseNumber = licenseNumber;
+    }
+
+    public LocalDate getIssueDate() {
+        return issueDate;
+    }
+
+    public void setIssueDate(
+            LocalDate issueDate) {
+
+        this.issueDate = issueDate;
+    }
+
+    public LocalDate getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(
+            LocalDate expiryDate) {
+
+        this.expiryDate = expiryDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(
+            String status) {
+
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(
+            LocalDateTime createdAt) {
+
+        this.createdAt = createdAt;
+    }
 }

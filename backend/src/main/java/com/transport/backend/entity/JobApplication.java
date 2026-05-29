@@ -1,5 +1,6 @@
 package com.transport.backend.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -48,11 +49,27 @@ public class JobApplication {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "license_number", length = 255)
+    private String licenseNumber;
+
+    @Column(name = "license_expiry")
+    private LocalDate licenseExpiry;
+
+    @Column(name = "license_class", length = 50)
+    private String licenseClass;
+
+    @Column(name = "license_image")
+    private String licenseImage;
+
+    @Column(name = "license_issue_date")
+    private LocalDate licenseIssueDate;
+
     public JobApplication() {
     }
 
     public JobApplication(RecruitmentCampaign campaign, String fullName, String phone, String email,
-            String address, Integer experienceYears, String status, LocalDateTime createdAt) {
+            String address, Integer experienceYears, String status, LocalDateTime createdAt, String licenseNumbeString,
+            LocalDate licenseExpiry, String licenseClass, String licenseImage, LocalDate licenseIssueDate) {
 
         this.campaign = campaign;
         this.fullName = fullName;
@@ -62,6 +79,11 @@ public class JobApplication {
         this.experienceYears = experienceYears;
         this.status = status;
         this.createdAt = createdAt;
+        this.licenseNumber = licenseNumbeString;
+        this.licenseExpiry = licenseExpiry;
+        this.licenseClass = licenseClass;
+        this.licenseImage = licenseImage;
+        this.licenseIssueDate = licenseIssueDate;
     }
 
     public Integer getId() {
@@ -135,4 +157,45 @@ public class JobApplication {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String LicenseNumber) {
+        this.licenseNumber = LicenseNumber;
+    }
+
+    public LocalDate getLicenseExpiry() {
+        return licenseExpiry;
+    }
+
+    public void setLicenseExpiry(LocalDate licenseExpiry) {
+        this.licenseExpiry = licenseExpiry;
+    }
+
+    public String getLicenseClass() {
+        return licenseClass;
+    }
+
+    public void setLicenseClass(String licenseClass) {
+        this.licenseClass = licenseClass;
+    }
+
+    public String getLicenseImage() {
+        return licenseImage;
+    }
+
+    public void setLicenseImage(String licenseImage) {
+        this.licenseImage = licenseImage;
+    }
+
+    public LocalDate getLicenseIssueDate() {
+        return licenseIssueDate;
+    }
+
+    public void setLicenseIssueDate(LocalDate licenseIssueDate) {
+        this.licenseIssueDate = licenseIssueDate;
+    }
+
 }

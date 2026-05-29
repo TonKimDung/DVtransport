@@ -7,7 +7,6 @@ import com.transport.backend.entity.RecruitmentCampaign;
 import com.transport.backend.repository.CampaignRepository.*;
 
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -34,6 +33,11 @@ public class JobApplicationService {
         dto.setExperienceYears(app.getExperienceYears());
         dto.setStatus(app.getStatus());
         dto.setCreatedAt(app.getCreatedAt());
+        dto.setLicenseExpiry(app.getLicenseExpiry());
+        dto.setLicenseNumber(app.getLicenseNumber());
+        dto.setLicenseClass(app.getLicenseClass());
+        dto.setLicenseIssueDate(app.getLicenseIssueDate());
+        dto.setLicenseImage(app.getLicenseImage());
 
         if (app.getCampaign() != null) {
             dto.setCampaignId(app.getCampaign().getId());
@@ -56,7 +60,12 @@ public class JobApplicationService {
         app.setEmail(dto.getEmail());
         app.setAddress(dto.getAddress());
         app.setExperienceYears(dto.getExperienceYears());
-        app.setStatus(dto.getStatus());
+        app.setStatus("REVIEWING");
+        app.setLicenseNumber(dto.getLicenseNumber());
+        app.setLicenseExpiry(dto.getLicenseExpiry());
+        app.setLicenseClass(dto.getLicenseClass());
+        app.setLicenseIssueDate(dto.getLicenseIssueDate());
+        app.setLicenseImage(dto.getLicenseImage());
 
         return toResponse(repository.save(app));
     }
@@ -100,8 +109,14 @@ public class JobApplicationService {
         app.setEmail(dto.getEmail());
         app.setAddress(dto.getAddress());
         app.setExperienceYears(dto.getExperienceYears());
-        app.setStatus(dto.getStatus());
-
+        app.setLicenseNumber(dto.getLicenseNumber());
+        app.setLicenseExpiry(dto.getLicenseExpiry());
+        if (!"REVIEWING".equals(app.getStatus())) {
+            throw new RuntimeException(
+                    "Hồ sơ đã duyệt không thể thay đổi trạng thái.");
+        }
+        if (dto.getStatus() != null)
+            app.setStatus(dto.getStatus());
         return toResponse(repository.save(app));
     }
 
@@ -119,9 +134,23 @@ public class JobApplicationService {
                 .orElseThrow(() -> new RuntimeException(
                         "Không tìm thấy hồ sơ"));
 
+        System.out.println(
+                "Current status = "
+                        + app.getStatus());
+
+        if (!"REVIEWING".equals(
+                app.getStatus())) {
+
+            System.out.println(
+                    "BLOCK UPDATE");
+
+            throw new RuntimeException(
+                    "Hồ sơ đã xử lý, không thể thay đổi trạng thái.");
+        }
+
         app.setStatus(status);
 
-        return toResponse(repository.save(app));
-
+        return toResponse(
+                repository.save(app));
     }
 }

@@ -2,34 +2,43 @@ package com.transport.backend.dto.contract;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public class ContractRequest {
+public class ContractDTO {
+
+    private Integer id;
 
     private String contractNumber;
+
     private String contractType;
 
-    private Integer customerId;
-    private Integer partnerId;
-
-    // DRIVER
     private Integer driverId;
 
-    // DRIVER LICENSE
+    private String driverName;
+
     private Integer driverLicenseId;
 
+    private String licenseClass;
+
+    private BigDecimal baseSalary;
+
     private LocalDate startDate;
+
     private LocalDate endDate;
 
     private BigDecimal totalValue;
 
-    // salary cho tài xế
-    private BigDecimal baseSalary;
-
     private String status;
 
-    // =========================
-    // GETTER SETTER
-    // =========================
+    private LocalDateTime createdAt;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getContractNumber() {
         return contractNumber;
@@ -47,22 +56,6 @@ public class ContractRequest {
         this.contractType = contractType;
     }
 
-    public Integer getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
-    }
-
-    public Integer getPartnerId() {
-        return partnerId;
-    }
-
-    public void setPartnerId(Integer partnerId) {
-        this.partnerId = partnerId;
-    }
-
     public Integer getDriverId() {
         return driverId;
     }
@@ -71,12 +64,36 @@ public class ContractRequest {
         this.driverId = driverId;
     }
 
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
+    }
+
     public Integer getDriverLicenseId() {
         return driverLicenseId;
     }
 
     public void setDriverLicenseId(Integer driverLicenseId) {
         this.driverLicenseId = driverLicenseId;
+    }
+
+    public String getLicenseClass() {
+        return licenseClass;
+    }
+
+    public void setLicenseClass(String licenseClass) {
+        this.licenseClass = licenseClass;
+    }
+
+    public BigDecimal getBaseSalary() {
+        return baseSalary;
+    }
+
+    public void setBaseSalary(BigDecimal baseSalary) {
+        this.baseSalary = baseSalary;
     }
 
     public LocalDate getStartDate() {
@@ -103,14 +120,6 @@ public class ContractRequest {
         this.totalValue = totalValue;
     }
 
-    public BigDecimal getBaseSalary() {
-        return baseSalary;
-    }
-
-    public void setBaseSalary(BigDecimal baseSalary) {
-        this.baseSalary = baseSalary;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -118,4 +127,14 @@ public class ContractRequest {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // getter setter
 }
