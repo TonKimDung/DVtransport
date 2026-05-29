@@ -13,17 +13,10 @@ public class ContractRequest {
 
     // DRIVER
     private Integer driverId;
-
-    // DRIVER LICENSE
-    private Integer driverLicenseId;
-
     private LocalDate startDate;
     private LocalDate endDate;
 
     private BigDecimal totalValue;
-
-    // salary cho tài xế
-    private BigDecimal baseSalary;
 
     private String status;
 
@@ -71,14 +64,6 @@ public class ContractRequest {
         this.driverId = driverId;
     }
 
-    public Integer getDriverLicenseId() {
-        return driverLicenseId;
-    }
-
-    public void setDriverLicenseId(Integer driverLicenseId) {
-        this.driverLicenseId = driverLicenseId;
-    }
-
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -101,14 +86,6 @@ public class ContractRequest {
 
     public void setTotalValue(BigDecimal totalValue) {
         this.totalValue = totalValue;
-    }
-
-    public BigDecimal getBaseSalary() {
-        return baseSalary;
-    }
-
-    public void setBaseSalary(BigDecimal baseSalary) {
-        this.baseSalary = baseSalary;
     }
 
     public String getStatus() {

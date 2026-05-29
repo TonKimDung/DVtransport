@@ -27,7 +27,7 @@ public class Contract {
     // =========================
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = true)
     private Customer customer;
 
     // =========================
@@ -35,7 +35,7 @@ public class Contract {
     // =========================
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "partner_id")
+    @JoinColumn(name = "partner_id", nullable = true)
     private Partner partner;
 
     // =========================
@@ -43,7 +43,7 @@ public class Contract {
     // =========================
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id")
+    @JoinColumn(name = "driver_id", nullable = true)
     private Driver driver;
 
     // =========================
@@ -51,7 +51,7 @@ public class Contract {
     // =========================
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_license_id")
+    @JoinColumn(name = "driver_license_id", nullable = true)
     private DriverLicense driverLicense;
 
     // =========================

@@ -1,5 +1,6 @@
 package com.transport.backend.service.contract;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,6 @@ public class ContractService {
         Customer customer = null;
         Partner partner = null;
         Driver driver = null;
-        DriverLicense driverLicense = null;
 
         // CUSTOMER
         if (req.getCustomerId() != null) {
@@ -63,14 +63,6 @@ public class ContractService {
                     .orElseThrow(() -> new RuntimeException("Driver not found"));
         }
 
-        // DRIVER LICENSE
-        if (req.getDriverLicenseId() != null) {
-
-            driverLicense = driverLicenseRepo
-                    .findById(req.getDriverLicenseId())
-                    .orElseThrow(() -> new RuntimeException("Driver license not found"));
-        }
-
         Contract c = new Contract();
 
         c.setContractNumber(req.getContractNumber());
@@ -82,16 +74,20 @@ public class ContractService {
         // DRIVER
         c.setDriver(driver);
 
-        // LICENSE
-        c.setDriverLicense(driverLicense);
+        // LICENSE AUTO FROM DRIVER
+        if (driver != null) {
 
+            DriverLicense driverLicense = driverLicenseRepo.findDriverLicenseByDriverId(driver.getId());
+
+            c.setDriverLicense(driverLicense);
+
+            // AUTO BASE SALARY FROM DRIVER
+            c.setBaseSalary(BigDecimal.valueOf(driverLicense.getLicenseType().getBaseSalary()));
+        }
         c.setStartDate(req.getStartDate());
         c.setEndDate(req.getEndDate());
 
         c.setTotalValue(req.getTotalValue());
-
-        // salary
-        c.setBaseSalary(req.getBaseSalary());
 
         c.setStatus(req.getStatus());
 

@@ -14,4 +14,6 @@ public interface DriverLicenseRepository
 
         List<DriverLicense> findByDriverId(
                         Integer driverId);
+
+        DriverLicense findDriverLicenseByDriverId(Integer driverId);
 }

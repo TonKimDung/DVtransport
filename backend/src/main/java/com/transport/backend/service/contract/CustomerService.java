@@ -25,13 +25,20 @@ public class CustomerService {
         c.setPhone(req.getPhone());
         c.setEmail(req.getEmail());
         c.setAddress(req.getAddress());
-        c.setTaxCode(req.getTaxCode());
+        c.setStatus(req.getStatus());
 
         return mapToResponse(repo.save(c));
     }
 
     public List<CustomerResponse> getAll() {
         return repo.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<CustomerResponse> getAvailable() {
+        return repo.findCustomersWithoutContract()
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -54,7 +61,7 @@ public class CustomerService {
         res.setPhone(c.getPhone());
         res.setEmail(c.getEmail());
         res.setAddress(c.getAddress());
-        res.setTaxCode(c.getTaxCode());
+        res.setStatus(c.getStatus());
         res.setCreatedAt(c.getCreatedAt());
         return res;
     }

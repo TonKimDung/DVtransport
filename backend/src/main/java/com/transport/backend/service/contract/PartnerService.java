@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-
 import com.transport.backend.dto.contract.PartnerRequest;
 import com.transport.backend.dto.contract.PartnerResponse;
 import com.transport.backend.entity.Partner;
@@ -22,12 +21,19 @@ public class PartnerService {
     public PartnerResponse create(PartnerRequest req) {
         Partner p = new Partner();
         p.setName(req.getName());
-        p.setPartnerType(req.getPartnerType());
+        p.setStatus(req.getStatus());
         p.setPhone(req.getPhone());
         p.setEmail(req.getEmail());
         p.setAddress(req.getAddress());
 
         return mapToResponse(repo.save(p));
+    }
+
+    public List<PartnerResponse> getAvailable() {
+        return repo.findPartnersWithoutContract()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     public List<PartnerResponse> getAll() {
@@ -41,7 +47,7 @@ public class PartnerService {
         PartnerResponse res = new PartnerResponse();
         res.setId(p.getId());
         res.setName(p.getName());
-        res.setPartnerType(p.getPartnerType());
+        res.setStatus(p.getStatus());
         res.setPhone(p.getPhone());
         res.setEmail(p.getEmail());
         res.setAddress(p.getAddress());

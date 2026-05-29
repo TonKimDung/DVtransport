@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.transport.backend.dto.contract.CustomerResponse;
 import com.transport.backend.dto.contract.PartnerRequest;
 import com.transport.backend.dto.contract.PartnerResponse;
 import com.transport.backend.service.contract.PartnerService;
@@ -38,5 +39,10 @@ public class PartnerController {
                 .filter(p -> p.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Partner not found"));
+    }
+
+    @GetMapping("/available-contract")
+    public List<PartnerResponse> getPartnersWithoutContract() {
+        return service.getAvailable();
     }
 }
