@@ -7,32 +7,32 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.transport.backend.entity.Vehicle;
+import com.transport.backend.entity.VehicleDriverAssignment;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
-    boolean existsByPlateNumber(String plateNumber);
+        boolean existsByPlateNumber(String plateNumber);
 
-    // =====================================================
-    // FIND VEHICLE BY STATUS
-    // =====================================================
+        // =====================================================
+        // FIND VEHICLE BY STATUS
+        // =====================================================
 
-    List<Vehicle> findByStatus(String status);
+        List<Vehicle> findByStatus(String status);
 
-    // =====================================================
-    // FIND VEHICLE BY CAPACITY + STATUS
-    // =====================================================
+        // =====================================================
+        // FIND VEHICLE BY CAPACITY + STATUS
+        // =====================================================
 
-    List<Vehicle> findByCapacityGreaterThanEqualAndStatus(
-            BigDecimal capacity,
-            String status);
+        List<Vehicle> findByCapacityGreaterThanEqual(
+                        BigDecimal capacity);
 
-    // =====================================================
-    // FIND VEHICLE BY STATUS + CAPACITY
-    // =====================================================
+        // =====================================================
+        // FIND VEHICLE BY STATUS + CAPACITY
+        // =====================================================
 
-    List<Vehicle> findByStatusAndCapacityGreaterThanEqual(
-            String status,
-            BigDecimal capacity);
+        List<Vehicle> findByStatusAndCapacityGreaterThanEqual(
+                        String status,
+                        BigDecimal capacity);
 
-    Optional<Vehicle> findByPlateNumber(String plateNumber);
+        Optional<Vehicle> findByPlateNumber(String plateNumber);
 }

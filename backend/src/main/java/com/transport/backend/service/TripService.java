@@ -89,34 +89,56 @@ public class TripService {
 
                 BigDecimal totalWeight = orders.stream()
                                 .map(Order::getWeight)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                                .reduce(
+                                                BigDecimal.ZERO,
+                                                BigDecimal::add);
 
-                List<Vehicle> vehicles = vehicleRepo.findByStatusAndCapacityGreaterThanEqual(
-                                "Hoạt động",
-                                totalWeight);
+                List<Vehicle> vehicles = vehicleRepo
+                                .findByCapacityGreaterThanEqual(
+                                                totalWeight);
 
-                return vehicles.stream().map(v -> {
+                return vehicles.stream()
 
-                        VehicleSuggestionResponse res = new VehicleSuggestionResponse();
+                                // xe không được đang chạy trip
+                                .filter(v -> !"IN_TRIP"
+                                                .equals(v.getStatus()))
 
-                        res.setVehicleId(v.getId());
-                        res.setPlateNumber(v.getPlateNumber());
-                        res.setVehicleType(v.getVehicleType());
-                        res.setCapacity(v.getCapacity());
-                        res.setCurrentLocation(v.getCurrentLocation());
+                                .map(v -> {
 
-                        assignmentRepo
-                                        .findTopByVehicle_IdOrderByAssignedDateDesc(v.getId())
-                                        .ifPresent(a -> {
-                                                res.setDriverName(
-                                                                a.getDriver().getFullName());
-                                        });
+                                        VehicleSuggestionResponse res = new VehicleSuggestionResponse();
 
-                        return res;
+                                        res.setVehicleId(v.getId());
+                                        res.setPlateNumber(
+                                                        v.getPlateNumber());
 
-                }).toList();
+                                        res.setVehicleType(
+                                                        v.getVehicleType());
+
+                                        res.setCapacity(
+                                                        v.getCapacity());
+
+                                        res.setCurrentLocation(
+                                                        v.getCurrentLocation());
+
+                                        // chỉ lấy assignment ACTIVE
+                                        assignmentRepo
+                                                        .findTopByVehicle_IdAndStatusOrderByAssignedDateDesc(
+                                                                        v.getId(),
+                                                                        "ACTIVE")
+                                                        .ifPresent(a -> {
+                                                                res.setDriverName(
+                                                                                a.getDriver()
+                                                                                                .getFullName());
+                                                        });
+
+                                        return res;
+                                })
+
+                                // chỉ show xe có tài xế
+                                .filter(v -> v.getDriverName() != null)
+
+                                .toList();
         }
-
         // =====================================================
         // CREATE TRIP
         // =====================================================
@@ -136,9 +158,9 @@ public class TripService {
 
                         System.out.println("VEHICLE STATUS = " + vehicle.getStatus());
 
-                        if (!"Hoạt động".equals(vehicle.getStatus())) {
+                        if ("IN_TRIP".equals(vehicle.getStatus())) {
                                 throw new RuntimeException(
-                                                "Vehicle not available: " + vehicle.getStatus());
+                                                "Xe đang thực hiện chuyến khác");
                         }
 
                         VehicleDriverAssignment assignment = assignmentRepo
@@ -332,10 +354,10 @@ public class TripService {
         // =====================================================
 
         public List<TripResponse> getTripsByDriver(Integer driverId) {
-        return tripRepo.findByDriver_IdOrderByDepartureTimeDesc(driverId)
-                .stream()
-                .map(this::map)
-                .toList();
+                return tripRepo.findByDriver_IdOrderByDepartureTimeDesc(driverId)
+                                .stream()
+                                .map(this::map)
+                                .toList();
         }
 
         // Set hoàn thành
