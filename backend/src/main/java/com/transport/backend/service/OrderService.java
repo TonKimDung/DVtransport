@@ -145,18 +145,17 @@ public class OrderService {
     }
 
     public List<OrderResponse> getOrdersByStatus(String status) {
-    return orderRepository.findByStatus(status)
-            .stream()
-            .map(this::toResponse)
-            .toList();
-}
+        return orderRepository.findByStatus(status)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
 
     public List<Vehicle> suggestVehicles(Integer orderId) {
         Order order = getOrderEntityById(orderId);
 
-        return vehicleRepository.findByCapacityGreaterThanEqualAndStatus(
-                order.getWeight(),
-                "ACTIVE");
+        return vehicleRepository.findByCapacityGreaterThanEqual(
+                order.getWeight());
     }
 
     public List<Order> getDailyPlan(LocalDate date) {
