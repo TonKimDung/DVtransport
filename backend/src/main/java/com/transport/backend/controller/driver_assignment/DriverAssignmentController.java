@@ -2,7 +2,14 @@ package com.transport.backend.controller.driver_assignment;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.transport.backend.dto.driver_assignment.AssignDriverRequest;
 import com.transport.backend.dto.driver_assignment.AssignmentResponse;
@@ -10,6 +17,7 @@ import com.transport.backend.dto.driver_assignment.DriverWorkResponse;
 import com.transport.backend.service.driver_assignment.DriverAssignmentService;
 
 @RestController
+@PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN')")
 @RequestMapping("/api/driver-assignments")
 public class DriverAssignmentController {
 

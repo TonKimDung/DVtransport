@@ -1,5 +1,12 @@
 package com.transport.backend.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.transport.backend.dto.auth.UserLogResponse;
 import com.transport.backend.dto.auth.UserRequest;
 import com.transport.backend.dto.auth.UserResponse;
 import com.transport.backend.entity.Role;
@@ -8,12 +15,8 @@ import com.transport.backend.entity.UserLog;
 import com.transport.backend.repository.RoleRepository;
 import com.transport.backend.repository.UserLogRepository;
 import com.transport.backend.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final UserLogRepository userLogRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    
 
     private UserResponse toResponse(User user) {
         return UserResponse.builder()
@@ -140,4 +144,29 @@ public class UserService {
 
         return toResponse(saved);
     }
+
+    private UserLogResponse toLogResponse(UserLog log) {
+    return UserLogResponse.builder()
+            .id(log.getId())
+            .userId(log.getUser() != null ? log.getUser().getId() : null)
+            .username(log.getUser() != null ? log.getUser().getUsername() : null)
+            .fullName(log.getUser() != null ? log.getUser().getFullName() : null)
+            .action(log.getAction())
+            .createdAt(log.getCreatedAt())
+            .build();
+}
+
+public List<UserLogResponse> getAllUserLogs() {
+    return userLogRepository.findAllByOrderByCreatedAtDesc()
+            .stream()
+            .map(this::toLogResponse)
+            .toList();
+}
+
+public List<UserLogResponse> getUserLogsByUserId(Integer userId) {
+    return userLogRepository.findByUserIdOrderByCreatedAtDesc(userId)
+            .stream()
+            .map(this::toLogResponse)
+            .toList();
+}
 }

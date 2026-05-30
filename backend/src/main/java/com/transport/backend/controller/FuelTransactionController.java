@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,21 +31,25 @@ public class FuelTransactionController {
     private final FuelTransactionService fuelTransactionService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'LAI_XE')")
     public List<FuelTransactionResponse> getAllFuelTransactions() {
         return fuelTransactionService.getAllFuelTransactions();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'LAI_XE')")
     public FuelTransactionResponse getFuelTransactionById(@PathVariable Integer id) {
         return fuelTransactionService.getFuelTransactionById(id);
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'LAI_XE')")
     public FuelTransactionResponse createFuelTransaction(@RequestBody FuelTransactionRequest request) {
         return fuelTransactionService.createFuelTransaction(request);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'LAI_XE')")
     public FuelTransactionResponse updateFuelTransaction(
             @PathVariable Integer id,
             @RequestBody FuelTransactionRequest request
@@ -53,11 +58,13 @@ public class FuelTransactionController {
     }
 
     @GetMapping("/vehicle/{vehicleId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'LAI_XE', 'KE_TOAN')")
     public List<FuelTransactionResponse> getFuelHistoryByVehicle(@PathVariable Integer vehicleId) {
         return fuelTransactionService.getFuelHistoryByVehicle(vehicleId);
     }
 
     @GetMapping("/history")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'LAI_XE', 'KE_TOAN')")
     public List<FuelTransactionResponse> getFuelHistoryByDate(
             @RequestParam String startDate,
             @RequestParam String endDate
@@ -69,6 +76,7 @@ public class FuelTransactionController {
     }
 
     @GetMapping("/consumption/vehicle/{vehicleId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'LAI_XE', 'KE_TOAN')")
     public BigDecimal getFuelConsumptionByVehicle(
             @PathVariable Integer vehicleId,
             @RequestParam String startDate,
@@ -82,6 +90,7 @@ public class FuelTransactionController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'LAI_XE')")
     public String deleteFuelTransaction(@PathVariable Integer id) {
         fuelTransactionService.deleteFuelTransaction(id);
         return "Xóa phiếu nhiên liệu thành công";

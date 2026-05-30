@@ -2,6 +2,7 @@ package com.transport.backend.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,6 +34,7 @@ public class TripController {
     // =====================================================
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN')")
     public List<TripResponse> getAll() {
         return tripService.getAll();
     }
@@ -62,6 +64,7 @@ public class TripController {
     // =====================================================
 
     @GetMapping("/route/{routeId}/vehicles")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN')")
     public List<VehicleSuggestionResponse> suggestVehicles(
             @PathVariable Integer routeId) {
 
@@ -73,6 +76,7 @@ public class TripController {
     // =====================================================
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN')")
     public TripResponse createTrip(
             @RequestBody CreateTripRequest request) {
 
