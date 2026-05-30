@@ -6,13 +6,21 @@ public class PartnerResponse {
 
     private Integer id;
     private String name;
-    private String partnerType;
+    private String status;
     private String phone;
     private String email;
     private String address;
     private LocalDateTime createdAt;
 
     // getter setter
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -27,14 +35,6 @@ public class PartnerResponse {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPartnerType() {
-        return partnerType;
-    }
-
-    public void setPartnerType(String partnerType) {
-        this.partnerType = partnerType;
     }
 
     public String getPhone() {

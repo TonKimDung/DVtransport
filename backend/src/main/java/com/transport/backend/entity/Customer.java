@@ -16,8 +16,8 @@ import jakarta.persistence.Table;
 public class Customer {
 
     @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(nullable = false, length = 255)
     private String name;
@@ -31,8 +31,8 @@ private Integer id;
     @Column(columnDefinition = "TEXT")
     private String address;
 
-    @Column(name = "tax_code", length = 255)
-    private String taxCode;
+    @Column(name = "status", length = 255)
+    private String status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -41,14 +41,14 @@ private Integer id;
     public Customer() {
     }
 
-    public Customer( String name, String phone, String email, String address, String taxCode,
+    public Customer(String name, String phone, String email, String address, String status,
             LocalDateTime createdAt) {
-        
+
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.taxCode = taxCode;
+        this.status = status;
         this.createdAt = createdAt;
     }
 
@@ -59,7 +59,7 @@ private Integer id;
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -67,7 +67,7 @@ private Integer id;
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getPhone() {
         return phone;
     }
@@ -75,7 +75,7 @@ private Integer id;
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    
+
     public String getEmail() {
         return email;
     }
@@ -83,7 +83,7 @@ private Integer id;
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public String getAddress() {
         return address;
     }
@@ -91,15 +91,15 @@ private Integer id;
     public void setAddress(String address) {
         this.address = address;
     }
-    
-    public String getTaxCode() {
-        return taxCode;
+
+    public String getStatus() {
+        return status;
     }
 
-    public void setTaxCode(String taxCode) {
-        this.taxCode = taxCode;
+    public void setStatus(String status) {
+        this.status = status;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

@@ -53,6 +53,15 @@ public class DriverWorkLog {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "warning_level")
+    private String warningLevel;
+
+    @Column(name = "warning_message")
+    private String warningMessage;
+
+    @Column(name = "overtime")
+    private Boolean overtime = false;
+
     public DriverWorkLog() {
     }
 

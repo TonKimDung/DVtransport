@@ -49,8 +49,7 @@ public class DriverBaseSalaryController {
     @PutMapping("/{id}")
     public DriverBaseSalaryResponse updateBaseSalary(
             @PathVariable Integer id,
-            @RequestBody DriverBaseSalaryRequest request
-    ) {
+            @RequestBody DriverBaseSalaryRequest request) {
         return driverBaseSalaryService.updateBaseSalary(id, request);
     }
 

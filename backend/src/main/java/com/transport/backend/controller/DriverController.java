@@ -67,4 +67,9 @@ public class DriverController {
         return driverService
                 .getAvailableDrivers();
     }
+
+    @GetMapping("/available-contract")
+    public List<DriverDTO> getDriversWithoutContract() {
+        return driverService.getDriversWithoutContract();
+    }
 }

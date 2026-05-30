@@ -40,6 +40,9 @@ public class TripService {
         private final TripOrderRepository tripOrderRepo;
         private final VehicleDriverAssignmentRepository assignmentRepo;
         private final DriverWorkLogRepository driverWorkLogRepo;
+        private static final BigDecimal MAX_HOURS_PER_DAY = BigDecimal.valueOf(8);
+
+        private static final BigDecimal DANGER_HOURS = BigDecimal.valueOf(10);
 
         public TripService(
                         TripRepository tripRepo,
@@ -324,62 +327,115 @@ public class TripService {
                 return map(trip);
         }
 
-        //Set hoàn thành
+        // Set hoàn thành
 
         public void completeTrip(Integer tripId) {
-    Trip trip = tripRepo.findById(tripId)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến đi"));
+                Trip trip = tripRepo.findById(tripId)
+                                .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến đi"));
 
-    trip.setStatus("COMPLETED");
-    trip.setArrivalTime(LocalDateTime.now());
-    tripRepo.save(trip);
+                trip.setStatus("COMPLETED");
+                trip.setArrivalTime(LocalDateTime.now());
+                tripRepo.save(trip);
 
-    List<TripOrder> tripOrders = tripOrderRepo.findByTripId(tripId);
+                List<TripOrder> tripOrders = tripOrderRepo.findByTripId(tripId);
 
-    for (TripOrder tripOrder : tripOrders) {
-        Order order = tripOrder.getOrder();
+                for (TripOrder tripOrder : tripOrders) {
+                        Order order = tripOrder.getOrder();
 
-        if (order != null) {
-            order.setStatus("COMPLETED");
-            orderRepo.save(order);
+                        if (order != null) {
+                                order.setStatus("COMPLETED");
+                                orderRepo.save(order);
 
-            tripOrder.setStatus("COMPLETED");
+                                tripOrder.setStatus("COMPLETED");
+                        }
+                }
+
+                tripOrderRepo.saveAll(tripOrders);
+
+                if (trip.getDriver() == null) {
+                        throw new RuntimeException("Chuyến đi chưa có tài xế");
+                }
+
+                boolean existed = driverWorkLogRepo.existsByDriverIdAndTripId(
+                                trip.getDriver().getId(),
+                                trip.getId());
+
+                if (!existed) {
+
+                        BigDecimal drivingHours = BigDecimal.ZERO;
+
+                        if (trip.getDepartureTime() != null
+                                        && trip.getArrivalTime() != null) {
+
+                                long minutes = Duration.between(
+                                                trip.getDepartureTime(),
+                                                trip.getArrivalTime())
+                                                .toMinutes();
+
+                                drivingHours = BigDecimal
+                                                .valueOf(minutes)
+                                                .divide(
+                                                                BigDecimal.valueOf(60),
+                                                                2,
+                                                                RoundingMode.HALF_UP);
+                        }
+
+                        // =====================================
+                        // TÍNH TỔNG GIỜ TRONG NGÀY
+                        // =====================================
+
+                        List<DriverWorkLog> todayLogs = driverWorkLogRepo
+                                        .findByDriverIdAndWorkDate(
+                                                        trip.getDriver().getId(),
+                                                        LocalDate.now());
+
+                        BigDecimal todayTotal = todayLogs.stream()
+                                        .map(DriverWorkLog::getDrivingHours)
+                                        .reduce(
+                                                        BigDecimal.ZERO,
+                                                        BigDecimal::add);
+
+                        BigDecimal finalHours = todayTotal.add(drivingHours);
+
+                        // =====================================
+                        // WARNING
+                        // =====================================
+
+                        boolean overtime = false;
+
+                        String warningLevel = "NORMAL";
+
+                        String warningMessage = null;
+
+                        if (finalHours.compareTo(DANGER_HOURS) > 0) {
+
+                                overtime = true;
+
+                                warningLevel = "DANGEROUS";
+
+                                warningMessage = "Tài xế vượt quá 10 giờ lái xe/ngày";
+
+                        } else if (finalHours.compareTo(MAX_HOURS_PER_DAY) > 0) {
+
+                                overtime = true;
+
+                                warningLevel = "WARNING";
+
+                                warningMessage = "Tài xế vượt quá 8 giờ lái xe/ngày";
+                        }
+
+                        DriverWorkLog log = DriverWorkLog.builder()
+                                        .driver(trip.getDriver())
+                                        .trip(trip)
+                                        .workDate(LocalDate.now())
+                                        .drivingHours(drivingHours)
+                                        .tripCount(1)
+                                        .overtime(overtime)
+                                        .warningLevel(warningLevel)
+                                        .warningMessage(warningMessage)
+                                        .build();
+
+                        driverWorkLogRepo.save(log);
+                }
         }
-    }
-
-    tripOrderRepo.saveAll(tripOrders);
-
-    if (trip.getDriver() == null) {
-        throw new RuntimeException("Chuyến đi chưa có tài xế");
-    }
-
-    boolean existed = driverWorkLogRepo.existsByDriverIdAndTripId(
-            trip.getDriver().getId(),
-            trip.getId()
-    );
-
-    if (!existed) {
-        BigDecimal drivingHours = BigDecimal.ZERO;
-
-        if (trip.getDepartureTime() != null && trip.getArrivalTime() != null) {
-            long minutes = Duration.between(
-                    trip.getDepartureTime(),
-                    trip.getArrivalTime()
-            ).toMinutes();
-
-            drivingHours = BigDecimal.valueOf(minutes)
-                    .divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-        }
-
-        DriverWorkLog log = DriverWorkLog.builder()
-                .driver(trip.getDriver())
-                .trip(trip)
-                .workDate(LocalDate.now())
-                .drivingHours(drivingHours)
-                .tripCount(1)
-                .build();
-
-        driverWorkLogRepo.save(log);
-    }
-}
 }
