@@ -13,6 +13,7 @@ import lombok.Setter;
 @Builder
 public class LoginResponse {
     private String token;
+    private Integer driverId;
 
     private Integer userId;
     private String username;

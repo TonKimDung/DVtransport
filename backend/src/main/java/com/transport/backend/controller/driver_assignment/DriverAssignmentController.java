@@ -1,5 +1,6 @@
 package com.transport.backend.controller.driver_assignment;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +18,7 @@ import com.transport.backend.dto.driver_assignment.DriverWorkResponse;
 import com.transport.backend.service.driver_assignment.DriverAssignmentService;
 
 @RestController
-@PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN')")
+
 @RequestMapping("/api/driver-assignments")
 public class DriverAssignmentController {
 
@@ -28,6 +29,7 @@ public class DriverAssignmentController {
     }
 
     // 🚗 1. GÁN TÀI XẾ
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN')")
     @PostMapping
     public AssignmentResponse assign(@RequestBody AssignDriverRequest req) {
         return service.assign(req);
@@ -45,10 +47,24 @@ public class DriverAssignmentController {
         return service.getWorkToday(driverId);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN')")
     @PutMapping("/{id}/deactivate")
     public AssignmentResponse deactivate(
             @PathVariable Integer id) {
         return service
                 .deactivate(id);
     }
+
+    @GetMapping("/my")
+@PreAuthorize("hasRole('TAI_XE')")
+public List<AssignmentResponse> getMyAssignments(Principal principal) {
+    return service.getMyAssignments(principal.getName());
+}
+
+@GetMapping("/my/{driverId}")
+public List<AssignmentResponse> getMyAssignments(
+        @PathVariable Integer driverId) {
+
+    return service.getAssignmentsByDriver(driverId);
+}
 }

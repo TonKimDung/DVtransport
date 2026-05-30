@@ -24,8 +24,6 @@ public class FuelTransactionResponse {
     private Integer driverId;
     private String driverName;
 
-    private Integer partnerId;
-    private String partnerName;
 
     private LocalDateTime fuelDate;
     private BigDecimal quantityLiters;

@@ -327,6 +327,17 @@ public class TripService {
                 return map(trip);
         }
 
+        // =====================================================
+        // GET ALL TRIPS BY DRIVER
+        // =====================================================
+
+        public List<TripResponse> getTripsByDriver(Integer driverId) {
+        return tripRepo.findByDriver_IdOrderByDepartureTimeDesc(driverId)
+                .stream()
+                .map(this::map)
+                .toList();
+        }
+
         // Set hoàn thành
 
         public void completeTrip(Integer tripId) {

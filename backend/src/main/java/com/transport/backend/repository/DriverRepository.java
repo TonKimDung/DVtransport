@@ -1,11 +1,11 @@
 package com.transport.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.transport.backend.dto.driver.DriverDTO;
 import com.transport.backend.entity.Driver;
 import com.transport.backend.entity.VehicleDriverAssignment;
 
@@ -29,4 +29,6 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
                 )
             """)
     List<Driver> findDriversWithoutContract();
+    Optional<Driver> findByUser_Id(Integer userId);
+    
 }

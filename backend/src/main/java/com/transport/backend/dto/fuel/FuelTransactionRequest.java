@@ -16,7 +16,6 @@ public class FuelTransactionRequest {
     private Integer vehicleId;
     private Integer tripId;
     private Integer driverId;
-    private Integer partnerId;
     private LocalDateTime fuelDate;
     private BigDecimal quantityLiters;
     private BigDecimal unitPrice;

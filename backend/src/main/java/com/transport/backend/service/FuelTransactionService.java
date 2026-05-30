@@ -11,12 +11,10 @@ import com.transport.backend.dto.fuel.FuelTransactionRequest;
 import com.transport.backend.dto.fuel.FuelTransactionResponse;
 import com.transport.backend.entity.Driver;
 import com.transport.backend.entity.FuelTransaction;
-import com.transport.backend.entity.Partner;
 import com.transport.backend.entity.Trip;
 import com.transport.backend.entity.Vehicle;
 import com.transport.backend.repository.DriverRepository;
 import com.transport.backend.repository.FuelTransactionRepository;
-import com.transport.backend.repository.contract.PartnerRepository;
 import com.transport.backend.repository.TripRepository;
 import com.transport.backend.repository.VehicleRepository;
 
@@ -30,7 +28,6 @@ public class FuelTransactionService {
     private final VehicleRepository vehicleRepository;
     private final TripRepository tripRepository;
     private final DriverRepository driverRepository;
-    private final PartnerRepository partnerRepository;
 
     private FuelTransactionResponse toResponse(FuelTransaction fuel) {
         return FuelTransactionResponse.builder()
@@ -40,8 +37,6 @@ public class FuelTransactionService {
                 .tripId(fuel.getTrip() != null ? fuel.getTrip().getId() : null)
                 .driverId(fuel.getDriver() != null ? fuel.getDriver().getId() : null)
                 .driverName(fuel.getDriver() != null ? fuel.getDriver().getFullName() : null)
-                .partnerId(fuel.getPartner() != null ? fuel.getPartner().getId() : null)
-                .partnerName(fuel.getPartner() != null ? fuel.getPartner().getName() : null)
                 .fuelDate(fuel.getFuelDate())
                 .quantityLiters(fuel.getQuantityLiters())
                 .unitPrice(fuel.getUnitPrice())
@@ -85,11 +80,6 @@ public class FuelTransactionService {
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy tài xế"));
         }
 
-        Partner partner = null;
-        if (request.getPartnerId() != null) {
-            partner = partnerRepository.findById(request.getPartnerId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đối tác"));
-        }
 
         BigDecimal totalAmount = request.getQuantityLiters().multiply(request.getUnitPrice());
 
@@ -97,7 +87,6 @@ public class FuelTransactionService {
                 .vehicle(vehicle)
                 .trip(trip)
                 .driver(driver)
-                .partner(partner)
                 .fuelDate(request.getFuelDate() != null ? request.getFuelDate() : LocalDateTime.now())
                 .quantityLiters(request.getQuantityLiters())
                 .unitPrice(request.getUnitPrice())
@@ -126,16 +115,10 @@ public class FuelTransactionService {
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy tài xế"));
         }
 
-        Partner partner = null;
-        if (request.getPartnerId() != null) {
-            partner = partnerRepository.findById(request.getPartnerId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đối tác"));
-        }
 
         fuel.setVehicle(vehicle);
         fuel.setTrip(trip);
         fuel.setDriver(driver);
-        fuel.setPartner(partner);
         fuel.setFuelDate(request.getFuelDate() != null ? request.getFuelDate() : LocalDateTime.now());
         fuel.setQuantityLiters(request.getQuantityLiters());
         fuel.setUnitPrice(request.getUnitPrice());

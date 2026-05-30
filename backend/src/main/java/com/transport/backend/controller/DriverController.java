@@ -3,7 +3,6 @@ package com.transport.backend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +19,6 @@ import com.transport.backend.dto.driver.UpdateDriverRequest;
 import com.transport.backend.service.DriverService;
 
 @RestController
-@PreAuthorize("hasAnyRole('ADMIN', 'DIEU_PHOI_VIEN', 'HR')")
 @RequestMapping("/api/drivers")
 public class DriverController {
 
@@ -72,4 +70,6 @@ public class DriverController {
     public List<DriverDTO> getDriversWithoutContract() {
         return driverService.getDriversWithoutContract();
     }
+
+    
 }

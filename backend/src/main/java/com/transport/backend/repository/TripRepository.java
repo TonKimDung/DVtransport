@@ -25,4 +25,6 @@ public interface TripRepository extends JpaRepository<Trip, Integer> {
     LocalDateTime start,
     LocalDateTime end
 );
+
+    List<Trip> findByDriver_IdOrderByDepartureTimeDesc(Integer driverId);
 }

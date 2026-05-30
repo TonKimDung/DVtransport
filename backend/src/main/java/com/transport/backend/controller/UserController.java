@@ -69,4 +69,5 @@ public class UserController {
     public ResponseEntity<List<UserLogResponse>> getUserLogsByUserId(@PathVariable Integer id) {
         return ResponseEntity.ok(userService.getUserLogsByUserId(id));
     }
+
 }

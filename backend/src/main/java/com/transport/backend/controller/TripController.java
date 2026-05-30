@@ -100,4 +100,9 @@ public class TripController {
             tripService.completeTrip(id);
             return "Hoàn thành chuyến đi, cập nhật đơn hàng và ghi work log thành công";
     }
+
+    @GetMapping("/driver/{driverId}")
+    public List<TripResponse> getTripsByDriver(@PathVariable Integer driverId) {
+        return tripService.getTripsByDriver(driverId);
+    }
 }

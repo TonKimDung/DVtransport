@@ -10,10 +10,12 @@ import com.transport.backend.dto.driver_assignment.AssignmentResponse;
 import com.transport.backend.dto.driver_assignment.DriverWorkResponse;
 import com.transport.backend.entity.Driver;
 import com.transport.backend.entity.DriverWorkLog;
+import com.transport.backend.entity.User;
 import com.transport.backend.entity.Vehicle;
 import com.transport.backend.entity.VehicleDriverAssignment;
 import com.transport.backend.repository.DriverRepository;
 import com.transport.backend.repository.DriverWorkLogRepository;
+import com.transport.backend.repository.UserRepository;
 import com.transport.backend.repository.VehicleRepository;
 import com.transport.backend.repository.driver_assignment.VehicleDriverAssignmentRepository;
 
@@ -24,18 +26,21 @@ public class DriverAssignmentService {
     private final DriverRepository driverRepo;
     private final VehicleRepository vehicleRepo;
     private final DriverWorkLogRepository workLogRepo;
+    private final UserRepository userRepo;
 
     public DriverAssignmentService(
-            VehicleDriverAssignmentRepository assignmentRepo,
-            DriverRepository driverRepo,
-            VehicleRepository vehicleRepo,
-            DriverWorkLogRepository workLogRepo) {
+        VehicleDriverAssignmentRepository assignmentRepo,
+        DriverRepository driverRepo,
+        VehicleRepository vehicleRepo,
+        DriverWorkLogRepository workLogRepo,
+        UserRepository userRepo) {
 
-        this.assignmentRepo = assignmentRepo;
-        this.driverRepo = driverRepo;
-        this.vehicleRepo = vehicleRepo;
-        this.workLogRepo = workLogRepo;
-    }
+    this.assignmentRepo = assignmentRepo;
+    this.driverRepo = driverRepo;
+    this.vehicleRepo = vehicleRepo;
+    this.workLogRepo = workLogRepo;
+    this.userRepo = userRepo;
+}
 
     // ==========================
     // 1. GÁN TÀI XẾ
@@ -160,4 +165,27 @@ public class DriverAssignmentService {
 
         return map(assignment);
     }
+
+    public List<AssignmentResponse> getMyAssignments(String username) {
+    User user = userRepo.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
+
+    Driver driver = driverRepo.findByUser_Id(user.getId())
+            .orElseThrow(() -> new RuntimeException("Tài khoản này chưa liên kết với tài xế"));
+
+    return assignmentRepo.findByDriver_IdOrderByAssignedDateDesc(driver.getId())
+            .stream()
+            .map(this::map)
+            .toList();
+}
+
+        public List<AssignmentResponse> getAssignmentsByDriver(
+        Integer driverId) {
+
+    return assignmentRepo
+            .findByDriver_IdOrderByAssignedDateDesc(driverId)
+            .stream()
+            .map(this::map)
+            .toList();
+}
 }

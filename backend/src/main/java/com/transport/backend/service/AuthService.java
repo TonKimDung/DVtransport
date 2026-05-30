@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.transport.backend.dto.auth.LoginRequest;
 import com.transport.backend.dto.auth.LoginResponse;
+import com.transport.backend.entity.Driver;
 import com.transport.backend.entity.User;
 import com.transport.backend.entity.UserLog;
+import com.transport.backend.repository.DriverRepository;
 import com.transport.backend.repository.UserLogRepository;
 import com.transport.backend.repository.UserRepository;
 import com.transport.backend.security.JwtService;
@@ -22,6 +24,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final UserLogRepository userLogRepository;
     private final JwtService jwtService;
+    private final DriverRepository driverRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public LoginResponse login(LoginRequest request) {
@@ -37,9 +40,14 @@ public class AuthService {
                 user.getPasswordHash()
         );
 
+        
+
         if (!isMatch) {
             throw new RuntimeException("Sai tên đăng nhập hoặc mật khẩu");
         }
+
+        Driver driver = driverRepository.findByUser_Id(user.getId())
+        .orElse(null);
 
         String token = jwtService.generateToken(user.getUsername());
 
@@ -50,14 +58,15 @@ public class AuthService {
                 .build());
 
         return LoginResponse.builder()
-                .token(token)
-                .userId(user.getId())
-                .username(user.getUsername())
-                .fullName(user.getFullName())
-                .email(user.getEmail())
-                .roleName(user.getRole() != null ? user.getRole().getRoleName() : null)
-                .isActive(user.getIsActive())
-                .message("Đăng nhập thành công")
-                .build();
+        .token(token)
+        .userId(user.getId())
+        .driverId(driver != null ? driver.getId() : null)
+        .username(user.getUsername())
+        .fullName(user.getFullName())
+        .email(user.getEmail())
+        .roleName(user.getRole() != null ? user.getRole().getRoleName() : null)
+        .isActive(user.getIsActive())
+        .message("Đăng nhập thành công")
+        .build();
     }
 }

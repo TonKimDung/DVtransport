@@ -48,7 +48,13 @@ public class SecurityConfig {
                                 "/v3/api-docs",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .anyRequest().authenticated()
+
+                        // Cho preflight CORS
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Không bắt tất cả API phải login ở tầng SecurityConfig
+                        // API nào cần quyền thì dùng @PreAuthorize ở Controller
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
