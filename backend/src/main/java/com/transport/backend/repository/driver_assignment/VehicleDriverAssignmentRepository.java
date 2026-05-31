@@ -13,7 +13,10 @@ public interface VehicleDriverAssignmentRepository
         Optional<VehicleDriverAssignment> findTopByVehicle_IdOrderByAssignedDateDesc(Integer vehicleId);
 
         List<VehicleDriverAssignment> findByStatus(String status);
+
         List<VehicleDriverAssignment> findByDriver_IdOrderByAssignedDateDesc(Integer driverId);
 
-        
+        Optional<VehicleDriverAssignment> findTopByVehicle_IdAndStatusOrderByAssignedDateDesc(
+                        Integer vehicleId,
+                        String status);
 }
