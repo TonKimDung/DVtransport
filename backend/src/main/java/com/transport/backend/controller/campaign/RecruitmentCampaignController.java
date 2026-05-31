@@ -17,42 +17,53 @@ import com.transport.backend.entity.RecruitmentCampaign;
 import com.transport.backend.service.campaign.RecruitmentCampaignService;
 
 @RestController
-@PreAuthorize("hasAnyRole('ADMIN', 'HR')")
 @RequestMapping("/api/recruitment-campaigns")
 public class RecruitmentCampaignController {
 
     private final RecruitmentCampaignService service;
 
-    public RecruitmentCampaignController(RecruitmentCampaignService service) {
+    public RecruitmentCampaignController(
+            RecruitmentCampaignService service) {
         this.service = service;
     }
 
-    @PostMapping
-    public RecruitmentCampaign create(@RequestBody RecruitmentCampaignDTO dto) {
-        return service.create(dto);
-    }
-
+    // PUBLIC
     @GetMapping
     public List<RecruitmentCampaign> getAll() {
         return service.getAll();
     }
 
+    // PUBLIC
     @GetMapping("/{id}")
-    public RecruitmentCampaign getById(@PathVariable Integer id) {
+    public RecruitmentCampaign getById(
+            @PathVariable Integer id) {
         return service.getById(id);
     }
 
+    // ADMIN / HR
+    @PreAuthorize("hasAnyRole('ADMIN','HR')")
+    @PostMapping
+    public RecruitmentCampaign create(
+            @RequestBody RecruitmentCampaignDTO dto) {
+        return service.create(dto);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','HR')")
     @PutMapping("/{id}")
-    public RecruitmentCampaign update(@PathVariable Integer id,
+    public RecruitmentCampaign update(
+            @PathVariable Integer id,
             @RequestBody RecruitmentCampaignDTO dto) {
         return service.update(id, dto);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','HR')")
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    public void delete(
+            @PathVariable Integer id) {
         service.delete(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','HR')")
     @PutMapping("/{id}/close")
     public RecruitmentCampaign closeCampaign(
             @PathVariable Integer id) {
