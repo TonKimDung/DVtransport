@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.transport.backend.dto.order.OrderSimpleResponse;
 import com.transport.backend.dto.trip.CreateTripRequest;
 import com.transport.backend.dto.trip.TripResponse;
+import com.transport.backend.dto.trip.TripSalaryResponse;
 import com.transport.backend.dto.trip.VehicleSuggestionResponse;
 import com.transport.backend.entity.Driver;
 import com.transport.backend.entity.DriverWorkLog;
@@ -337,6 +338,35 @@ public class TripService {
                 .map(this::map)
                 .toList();
         }
+
+        // =====================================================
+// GET TRIP SALARY
+// =====================================================
+
+public TripSalaryResponse getTripSalary(Integer tripId) {
+    Trip trip = tripRepo.findById(tripId)
+            .orElseThrow(() -> new RuntimeException("Trip not found"));
+
+    List<TripOrder> tripOrders = tripOrderRepo.findByTripId(tripId);
+
+    BigDecimal totalOrderAmount = tripOrders.stream()
+            .map(TripOrder::getOrder)
+            .filter(order -> order != null && order.getTotalAmount() != null)
+            .map(Order::getTotalAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    BigDecimal salaryAmount = totalOrderAmount
+            .multiply(BigDecimal.valueOf(0.10))
+            .setScale(2, RoundingMode.HALF_UP);
+
+    return TripSalaryResponse.builder()
+            .tripId(trip.getId())
+            .tripCode(trip.getTripCode())
+            .totalOrderAmount(totalOrderAmount)
+            .salaryAmount(salaryAmount)
+            .note("Lương chuyến = 10% tổng giá trị đơn hàng trong chuyến")
+            .build();
+}
 
         // Set hoàn thành
 

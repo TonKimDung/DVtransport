@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.transport.backend.dto.order.OrderSimpleResponse;
 import com.transport.backend.dto.trip.CreateTripRequest;
 import com.transport.backend.dto.trip.TripResponse;
+import com.transport.backend.dto.trip.TripSalaryResponse;
 import com.transport.backend.dto.trip.VehicleSuggestionResponse;
 import com.transport.backend.service.TripService;
 
@@ -94,6 +95,11 @@ public class TripController {
         return tripService.getCurrentTripByDriver(
                 driverId);
     }
+
+    @GetMapping("/{tripId}/salary")
+public TripSalaryResponse getTripSalary(@PathVariable Integer tripId) {
+    return tripService.getTripSalary(tripId);
+}
 
     @PatchMapping("/{id}/complete")
         public String completeTrip(@PathVariable Integer id) {
